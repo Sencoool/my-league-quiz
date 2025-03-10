@@ -1,10 +1,23 @@
-import Image from "next/image";
+'use client'
 
-export default async function Home() {
-  // call api
-  const data = await fetch("https://ddragon.leagueoflegends.com/cdn/15.5.1/data/en_US/champion.json")
-  const champions = await data.json()
-  console.log(champions.data)
+import axios from "axios"
+import {useEffect, useState } from "react"
+
+export default function Home() {
+  const [champions, setChampions] = useState([]);
+
+  useEffect(() => {
+    // ดึงข้อมูล champion จาก API
+    async function getChampions() {
+      const res = await axios.get("https://ddragon.leagueoflegends.com/cdn/15.5.1/data/en_US/champion.json");
+      const championsArray:any = Object.values(res.data.data); // แปลง object เป็น array
+      setChampions(championsArray);
+      console.log(championsArray);
+      
+    }
+    getChampions();
+  }, []);
+
   return (
     <>
       <main className="flex flex-col items-center justify-center min-h-screen py-2 container mx-auto">
@@ -12,9 +25,26 @@ export default async function Home() {
           <h1 className="text-3xl font-bold">League Champions Guessing</h1>
           <input
             type="text"
-            placeholder="Guess . . ."
+            placeholder="Typee your champion name"
             className="bg-white text-black p-2 rounded-lg"
           />
+           <div>
+            {champions.length > 0 ? (
+              <div>
+                {champions.map((champion: any) => (
+                  <div key={champion.id}>
+                    <h2>{champion.name}</h2>
+                    <img
+                      src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${champion.id}.png`}
+                      alt={champion.name}
+                      />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>Loading...</p>
+            )}
+          </div>
         </div>
       </main>
     </>
