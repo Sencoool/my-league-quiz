@@ -5,6 +5,32 @@
   --foreground: #171717;
 }
 
+@layer utilities {
+  /* ปรับขนาด Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* พื้นหลังของ Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  /* สีของ Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #4a90e2;
+    border-radius: 10px;
+  }
+
+  /* Hover แล้วเปลี่ยนสี Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #357ABD;
+  }
+}
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
