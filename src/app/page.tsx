@@ -12,10 +12,14 @@ export default function Home() {
 
   // Search character
   const searchCharacter = (input: string) => {
-    let data = champions.filter((champions: any) => 
-      champions.name.toLowerCase().startsWith(input.toLowerCase()) // Start with make input filter more accurate
-    );
-    setSearch(data);
+    if(input !== ""){
+      let data = champions.filter((champions: any) => 
+        champions.name.toLowerCase().startsWith(input.toLowerCase()) // Start with make input filter more accurate
+      );
+      setSearch(data);
+    } else {
+      setSearch([]);
+    }
   };
 
   const handleClick = (input: string) => {
