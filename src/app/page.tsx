@@ -27,14 +27,19 @@ export default function Home() {
 
     data.push(input);
     setAnswer((data : any) => [...data, input]);
-    
-    if(inputRef.current){
-      inputRef.current.value = "";
-      setChampions([...champions]);
+
+    // filter selected champion
+    setChampions(champions.filter((champions: any) =>
+      champions.id !== input.id // filter every champion that id is not equal to selected champion (means remove selected champion)
+    ));
+
+    if (inputRef.current) {
+        inputRef.current.value = "";
     }
 
     setSearch([]);
-  }
+};
+
   
   // Get champions
   useEffect(() => {
