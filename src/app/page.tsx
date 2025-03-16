@@ -86,17 +86,29 @@ export default function Home() {
               </div>
           )}
           
-          <div className="flex flex-col items-center mt-3">
+          <div className="flex flex-col items-center mt-5 w-[500px]">
             Indicator
-            <div className="flex items-center mx-auto gap-5 mt-5">
-              <div>Red</div> {/* CF0A3B */}
-              <div>Orange</div> {/* FFA81F */}
-              <div>Green</div> {/* 29D65C */}
+            <div className="flex items-center justify-center mx-auto gap-5 mt-2">
+              <div className="flex justify-center w-[50px]">
+                <img src="/img/Red.png" alt="" className="w-[50px]" />
+              </div>
+              <div className="flex justify-center w-[150px]">
+                <img src="/img/Orange.png" alt="" className="w-[50px]" />
+              </div>
+              <div className="flex justify-center w-[50px]">
+                <img src="/img/Green.png" alt="" className="w-[50px]" />
+              </div>
             </div>
-            <div className="flex items-center mx-auto gap-5 mt-5">
-              <div>Wrong</div>
-              <div>Halfway There</div>
-              <div>Right</div>
+            <div className="flex items-center justify-center mx-auto gap-5 ">
+              <div className="flex justify-center w-[50px]">
+                <div className="flex justify-center">Wrong</div>
+              </div>
+              <div className="flex justify-center w-[150px]">
+                <div className="flex justify-center">Halfway There</div>
+              </div>
+              <div className="flex justify-center w-[50px]">
+                <div className="flex justify-center">Right</div>
+              </div>
             </div>
           </div>
         </div>
