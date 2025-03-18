@@ -4,13 +4,32 @@ import axios from "axios"
 import {useEffect, useRef, useState } from "react"
 
 export default function Home() {
+  const [initials, setInitials] = useState<any>([]); // Initials champions
   const [champions, setChampions] = useState<any>([]);
   const [search, setSearch] = useState([]);
   const [answer, setAnswer] = useState<any>([]);
   const [randomChampion, setRandomChampion] = useState<any>([]);
+  const [winGame, setWinGame] = useState(false);
   const inputRef = useRef<any>(null);
+  const winRef = useRef<any>(false);
 
-  // Search character
+  async function getChampions() {
+    const res = await axios.get(
+      "https://ddragon.leagueoflegends.com/cdn/15.5.1/data/en_US/champion.json"
+    );
+    let championsArray : any = Object.values(res.data.data); // Change object to array of champions
+    setInitials(championsArray);
+    setChampions(championsArray);
+
+    const index = Math.floor(Math.random() * championsArray.length); // Randomize champion
+    setRandomChampion(championsArray[index]);
+  }
+
+  const getRandomChampion = () => {
+    const index = Math.floor(Math.random() * champions.length);
+    setRandomChampion(champions[index]);
+  };
+
   const searchCharacter = (input: string) => {
     if(input !== ""){
       let data = champions.filter((champions: any) => 
@@ -37,23 +56,36 @@ export default function Home() {
         inputRef.current.value = "";
     }
 
+    gameWin(input);
     setSearch([]);
-};
+  };
+
+  const gameWin = (data: any) => {
+    let score = 0;
+
+    if (data.name == randomChampion.name) score++;
+    if (data.partype == randomChampion.partype) score++;
+
+    if (score === 2) {
+      setWinGame(true);
+      winRef.current = true;;
+    }
+  };
+
+  const playAgain = () => {
+    setAnswer([]);
+    setSearch([]);
+    setChampions(initials);
+    setWinGame(false);
+    getRandomChampion();
+    inputRef.current.value = "";
+    winRef.current = false;
+  };
+  
 
   
   // Get champions
   useEffect(() => {
-    async function getChampions() {
-      const res = await axios.get(
-        "https://ddragon.leagueoflegends.com/cdn/15.5.1/data/en_US/champion.json"
-      );
-      let championsArray : any = Object.values(res.data.data); // Change object to array of champions
-      setChampions(championsArray);
-  
-      const index = Math.floor(Math.random() * championsArray.length); // Randomize champion
-      setRandomChampion(championsArray[index]);
-    }
-
     getChampions();
   }, []);
   
@@ -69,9 +101,9 @@ export default function Home() {
           <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-1/2 rounded-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} ref={inputRef} autoComplete="off"/>
           {/* current? preventing null when no input yet */}
           {(search.length === 0 && inputRef.current?.value !== "") ? ( 
-          <div className="absolute w-1/2 max-h-[340px] top-39 overflow-hidden">
-            <div className="max-h-[100px] flex justify-center items-center pt-2">
-              No champions found
+          <div className="absolute w-1/2 max-h-[340px] top-39 overflow-hidden mr-5 pl-5">
+            <div className="flex items-center justify-center gap-4 p-2 border-b bg-neutral-800">
+              No champions found !
             </div>
           </div>
             ) 
@@ -86,7 +118,8 @@ export default function Home() {
               </div>
           )}
           
-          <div className="flex flex-col items-center mt-5 w-[500px]">
+          {/* Indicator */}
+          <div className="flex flex-col items-center mt-10 w-[500px]">
             Indicator
             <div className="flex items-center justify-center mx-auto gap-5 mt-2">
               <div className="flex justify-center w-[50px]">
@@ -141,6 +174,13 @@ export default function Home() {
             ))}
            </div>
         </div>
+        {(winGame) ? (
+          <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[450px] mt-[100px]">
+            Win
+            <button className=" border-2 rounded-lg border-purple-400 ml-[50px] w-1/3 cursor-pointer" onClick={playAgain}>Play Again</button>
+          </div>
+
+        ) : null }
       </main>
     </>
   );
