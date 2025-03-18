@@ -171,8 +171,8 @@ export default function Home() {
                 <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1s',backgroundColor: champions.partype == randomChampion.partype ? '#007f4e' : champions.id.includes(randomChampion.partype) ? '#f37324' : '#e12729'}}>  
                   {champions.partype}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s',backgroundColor: champions.tags == randomChampion.tags ? '#007f4e' : champions.tags.some((tag : string) => randomChampion.tags.includes(tag)) ? '#f37324' : '#e12729'}}>  
-                  {champions.tags.join(',')}
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: (champions.tags.every((tag: string) => randomChampion.tags.includes(tag))? '#007f4e' : (champions.tags.some((tag: string) => randomChampion.tags.includes(tag))? '#f37324' : '#e12729')) }}>  
+                  {champions.tags.join(", ")}
                 </div>
               </div>
             ))}
