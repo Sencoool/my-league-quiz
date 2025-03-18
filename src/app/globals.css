@@ -3,14 +3,14 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-red: #e12729;
+  --color-orange: #f37324;
+  --color-green: #007f4e;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-red: #e12729;
-  --color-orange: #f37324;
-  --color-green: #007f4e;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

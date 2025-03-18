@@ -152,30 +152,34 @@ export default function Home() {
             <div className="flex justify-center p-2 w-[150px]">Icon</div>
             <div className="flex justify-center p-2 w-[150px]">name</div>
             <div className="flex justify-center p-2 w-[150px]">resources</div>
+            <div className="flex justify-center p-2 w-[150px]">roles</div>
            </div>
         {/* answer */}
            <div>
             {(answer.length === 0) ? (
-              <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[450px]">
+              <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[600px]">
                 Guess your first answer !
               </div>
             ) : answer.map((champions : any, index : any) => (
               <div className="flex" key={index}>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] custom-bg-red opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0s' }}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0s' ,backgroundColor: champions.id == randomChampion.id ? '#007f4e' : champions.id.includes(randomChampion.id) ? '#f37324' : '#e12729'}}>
                   <img src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${champions.id}.png`} alt="" className="w-1/2 object-cover"/>
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] custom-bg-orange opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0.5s' }}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0.5s',backgroundColor: champions.name == randomChampion.name ? '#007f4e' : champions.id.includes(randomChampion.name) ? '#f37324' : '#e12729'}}>
                   {champions.name}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] custom-bg-green opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1s' }}>  
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1s',backgroundColor: champions.partype == randomChampion.partype ? '#007f4e' : champions.id.includes(randomChampion.partype) ? '#f37324' : '#e12729'}}>  
                   {champions.partype}
+                </div>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s',backgroundColor: champions.tags == randomChampion.tags ? '#007f4e' : champions.tags.some((tag : string) => randomChampion.tags.includes(tag)) ? '#f37324' : '#e12729'}}>  
+                  {champions.tags.join(',')}
                 </div>
               </div>
             ))}
            </div>
         </div>
         {(winGame) ? (
-          <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[450px] mt-[100px]">
+          <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[450px] mt-[100px]" >
             Win
             <button className=" border-2 rounded-lg border-purple-400 ml-[50px] w-1/3 cursor-pointer" onClick={playAgain}>Play Again</button>
           </div>
