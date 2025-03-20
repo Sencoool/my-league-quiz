@@ -97,7 +97,7 @@ export default function Home() {
         {/* search box */}
         <div className="relative container mx-auto items-center flex flex-col border-2 border-yellow-50 p-4 rounded-lg w-1/2 h-[300px]">
           <h1 className="text-3xl font-bold mb-10">League Champions Guessing</h1>
-          <h1>Answer is : {randomChampion.name} </h1>
+          {/* <h1>Answer is : {randomChampion.name} </h1> */}
           <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-1/2 rounded-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} ref={inputRef} autoComplete="off"/>
           {/* current? preventing null when no input yet */}
           {(search.length === 0 && inputRef.current?.value !== "") ? ( 
@@ -108,7 +108,7 @@ export default function Home() {
           </div>
             ) 
           : (
-              <div className="absolute w-1/2 max-h-[340px] top-39 overflow-y-scroll mr-5 pl-5">
+              <div className="absolute w-1/2 max-h-[340px] top-34 overflow-y-scroll mr-5 pl-5">
                 {search.map((champion: any, index) => (
                 <div className="flex items-center gap-4 p-2 border-b bg-neutral-800 border-[#ccc] hover:bg-rose-950 duration-300 cursor-pointer" key={index} onClick={e => selectAnswer(champion)}>
                   <img width={50} height={50} src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${champion.id}.png`}  alt="" className="w-10 h-10 object-cover" />
@@ -162,7 +162,7 @@ export default function Home() {
               </div>
             ) : answer.map((champions : any, index : any) => (
               <div className="flex" key={index}>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0s' ,backgroundColor: champions.id == randomChampion.id ? '#007f4e' : champions.id.includes(randomChampion.id) ? '#f37324' : '#e12729'}}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0s'}}>
                   <img src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${champions.id}.png`} alt="" className="w-1/2 object-cover"/>
                 </div>
                 <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0.5s',backgroundColor: champions.name == randomChampion.name ? '#007f4e' : champions.id.includes(randomChampion.name) ? '#f37324' : '#e12729'}}>
