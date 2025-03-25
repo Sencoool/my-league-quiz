@@ -97,7 +97,7 @@ export default function Home() {
         {/* search box */}
         <div className="relative container mx-auto items-center flex flex-col border-2 border-yellow-50 p-4 rounded-lg w-1/2 h-[300px]">
           <h1 className="text-3xl font-bold mb-10">League Champions Guessing</h1>
-          {/* <h1>Answer is : {randomChampion.name} </h1> */}
+          <h1>Answer is : {randomChampion.name} </h1>
           <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-1/2 rounded-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} ref={inputRef} autoComplete="off"/>
           {/* current? preventing null when no input yet */}
           {(search.length === 0 && inputRef.current?.value !== "") ? ( 
@@ -179,11 +179,14 @@ export default function Home() {
            </div>
         </div>
         {(winGame) ? (
-          <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[450px] mt-[100px]" >
-            Win
-            <button className=" border-2 rounded-lg border-purple-400 ml-[50px] w-1/3 cursor-pointer" onClick={playAgain}>Play Again</button>
+          <div className="w-1/4 h-1/2 mt-20 fixed flex items-center justify-center bg-zinc-900 border-2 rounded-lg z-50" >
+            <div className="flex flex-col items-center p-10 rounded-lg">
+              <h2 className="text-3xl font-bold select-none">
+                You Win
+              </h2>
+            <button className=" text-white px-4 py-2 rounded-lg hover:bg-purple-500 transition-all duration-300" onClick={playAgain}>Play Again</button>
           </div>
-
+        </div>
         ) : null }
       </main>
     </>
