@@ -174,7 +174,7 @@ export default function Home() {
                 <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1s',backgroundColor: champions.partype == randomChampion.partype ? '#007f4e' : champions.id.includes(randomChampion.partype) ? '#f37324' : '#e12729'}}>  
                   {champions.partype}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: (champions.tags.every((tag: string) => randomChampion.tags.includes(tag))? '#007f4e' : (champions.tags.some((tag: string) => randomChampion.tags.includes(tag))? '#f37324' : '#e12729')) }}>  
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0 text-center" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: (champions.tags.every((tag: string) => randomChampion.tags.includes(tag))? '#007f4e' : (champions.tags.some((tag: string) => randomChampion.tags.includes(tag))? '#f37324' : '#e12729')) }}>  
                   {champions.tags.join(", ")}
                 </div>
               </div>
@@ -182,13 +182,17 @@ export default function Home() {
            </div>
         </div>
         {(winGame) ? (
-          <div className="w-1/4 h-1/2 mt-20 fixed flex items-center justify-center bg-zinc-900 border-2 rounded-lg z-50 animate-answer" >
+          <div className="w-1/4 h-1/2 mt-20 fixed flex items-center justify-center bg-zinc-900 border-2 rounded-lg z-50 opacity-0" style={{ animation: 'answerDown 0.5s ease-out forwards', animationDelay: '2.0s'}}>
             <div className="flex flex-col items-center p-10 rounded-lg">
               <h2 className="text-3xl font-bold select-none pb-5">
-                You Win
+                Victory !
               </h2>
-              <p className="pb-3 select-none">Total Guess : {guess}</p>
-            <button className=" text-white px-4 py-2 rounded-lg border-2 border-purple-500 hover:bg-purple-500 hover:text-black transition-all duration-300 cursor-pointer select-none" onClick={playAgain}>Play Again</button>
+              <img src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${randomChampion.id}.png`} alt="" />
+              <p className="pt-5 pb-3 text-3xl font-bold select-none">Today guess : {randomChampion.name}</p>
+              <p className="pb-3 select-none">Total Guess : {guess} times</p>
+              <p className="pb-1 select-none">wanna play again ?</p>
+              <p className="pb-1 text-green-300 select-none">🢃</p>
+            <button className=" text-white px-4 py-2 rounded-lg border-2 border-white hover:bg-white hover:text-black transition-all duration-300 cursor-pointer select-none" onClick={playAgain}>Play Again</button>
           </div>
         </div>
         ) : null }

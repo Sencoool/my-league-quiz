@@ -30,7 +30,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #1b1a1a;
-    --foreground: #ededed;
+    --foreground: #edededf3;
   }
 }
 
@@ -43,20 +43,17 @@
   }
 }
 
-@keyframes answerSlideDown {
+@keyframes answerDown {
   from {
     transform: translateY(-20%);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateY(0%);
     opacity: 1;
   }
 }
 
-.animate-answer {
-  animation: answerSlideDown 0.5s ease;
-}
 
 body {
   background: var(--background);
