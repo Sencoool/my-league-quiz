@@ -9,6 +9,7 @@ export default function Home() {
   const [search, setSearch] = useState([]);
   const [answer, setAnswer] = useState<any>([]);
   const [randomChampion, setRandomChampion] = useState<any>([]);
+  const [guess, setGuess] = useState<number>(0);
   const [winGame, setWinGame] = useState(false);
   const inputRef = useRef<any>(null);
   const winRef = useRef<any>(false);
@@ -46,6 +47,7 @@ export default function Home() {
 
     data.push(input);
     setAnswer((data : any) => [...data, input]);
+    setGuess(guess + 1);
 
     // filter selected champion
     setChampions(champions.filter((champions: any) =>
@@ -77,6 +79,7 @@ export default function Home() {
     setSearch([]);
     setChampions(initials);
     setWinGame(false);
+    setGuess(0);
     getRandomChampion();
     inputRef.current.value = "";
     winRef.current = false;
@@ -179,12 +182,13 @@ export default function Home() {
            </div>
         </div>
         {(winGame) ? (
-          <div className="w-1/4 h-1/2 mt-20 fixed flex items-center justify-center bg-zinc-900 border-2 rounded-lg z-50" >
+          <div className="w-1/4 h-1/2 mt-20 fixed flex items-center justify-center bg-zinc-900 border-2 rounded-lg z-50 animate-answer" >
             <div className="flex flex-col items-center p-10 rounded-lg">
-              <h2 className="text-3xl font-bold select-none">
+              <h2 className="text-3xl font-bold select-none pb-5">
                 You Win
               </h2>
-            <button className=" text-white px-4 py-2 rounded-lg hover:bg-purple-500 transition-all duration-300" onClick={playAgain}>Play Again</button>
+              <p className="pb-3 select-none">Total Guess : {guess}</p>
+            <button className=" text-white px-4 py-2 rounded-lg border-2 border-purple-500 hover:bg-purple-500 hover:text-black transition-all duration-300 cursor-pointer select-none" onClick={playAgain}>Play Again</button>
           </div>
         </div>
         ) : null }
