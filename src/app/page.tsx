@@ -42,6 +42,8 @@ export default function Home() {
     }
   };
 
+  // Tmr, make an arrow can select the champion
+
   const selectAnswer = (input: any) => {
     let data: any = [];
 
@@ -102,7 +104,7 @@ export default function Home() {
           <h1 className="text-3xl font-bold mb-10">League Champions Guessing</h1>
           <h1>Answer is : {randomChampion.name} </h1>
           <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-1/2 rounded-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} ref={inputRef} autoComplete="off"/>
-          {/* current? preventing null when no input yet */}
+          {/* current? on line 106 is preventing null when no input yet */}
           {(search.length === 0 && inputRef.current?.value !== "") ? ( 
           <div className="absolute w-1/2 max-h-[340px] top-39 overflow-hidden mr-5 pl-5">
             <div className="flex items-center justify-center gap-4 p-2 border-b bg-neutral-800">
