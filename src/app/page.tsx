@@ -100,31 +100,32 @@ export default function Home() {
       <main className="flex flex-col items-center min-h-screen py-2 container mx-auto pt-[100px]">
         
         {/* search box */}
-        <div className="relative container mx-auto items-center flex flex-col border-2 border-yellow-50 p-4 rounded-lg w-1/2 h-[300px]">
-          <h1 className="text-3xl font-bold mb-10">League Champions Guessing</h1>
-          <h1>Answer is : {randomChampion.name} </h1>
-          <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-1/2 rounded-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} ref={inputRef} autoComplete="off"/>
-          {/* current? on line 106 is preventing null when no input yet */}
-          {(search.length === 0 && inputRef.current?.value !== "") ? ( 
-          <div className="absolute w-1/2 max-h-[340px] top-39 overflow-hidden mr-5 pl-5">
-            <div className="flex items-center justify-center gap-4 p-2 border-b bg-neutral-800">
-              No champions found !
+        <div className="flex flex-col items-center container mx-auto border-2 border-yellow-50 p-4 rounded-lg w-1/2 h-[300px]">
+        <h1 className="text-3xl font-bold mb-5">League Champions Guessing</h1>
+
+          <div className="flex flex-col items-center w-full">
+            {/* search */}
+            <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-1/2 rounded-t-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} ref={inputRef} autoComplete="off" />
+
+            {/* select  */}
+            <div className={`w-1/2 max-h-[200px] overflow-y-auto flex flex-col border bg-neutral-800 rounded-b-lg relative z-10 ${inputRef.current?.value == "" ? 'hidden' : 'block'}} `}>
+              {search.length === 0 && inputRef.current?.value !== "" ? (
+                <div className="flex items-center justify-center gap-4 p-2 border-b">
+                  No champions found!
+                </div>
+              ) : (
+                search.map((champion: any, index) => (
+                  <div key={index} className="flex items-center gap-4 p-2 border-b border-[#ccc] hover:bg-rose-950 duration-300 cursor-pointer"onClick={() => selectAnswer(champion)}>
+                    <img width={50} height={50} src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${champion.id}.png`} alt={champion.name} className="w-10 h-10 object-cover" />
+                    {champion.name}
+                  </div>
+                ))
+              )}
             </div>
           </div>
-            ) 
-          : (
-              <div className="absolute w-1/2 max-h-[340px] top-34 overflow-y-scroll mr-5 pl-5">
-                {search.map((champion: any, index) => (
-                <div className="flex items-center gap-4 p-2 border-b bg-neutral-800 border-[#ccc] hover:bg-rose-950 duration-300 cursor-pointer" key={index} onClick={e => selectAnswer(champion)}>
-                  <img width={50} height={50} src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${champion.id}.png`}  alt="" className="w-10 h-10 object-cover" />
-                  {champion.name}
-                </div>
-              ))}
-              </div>
-          )}
           
           {/* Indicator */}
-          <div className="flex flex-col items-center mt-10 w-[500px]">
+          <div className="absolute flex flex-col items-center mt-40 w-[500px]">
             Indicator
             <div className="flex items-center justify-center mx-auto gap-5 mt-2">
               <div className="flex justify-center w-[50px]">
@@ -150,6 +151,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+
         {/* header */}
         <div className="flex flex-col items-center mt-10 w-1/2">
            Guess
