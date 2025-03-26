@@ -1,7 +1,8 @@
 'use client'
 
-import axios from "axios"
-import {useEffect, useRef, useState } from "react"
+import axios from "axios";
+import {useEffect, useRef, useState } from "react";
+import { allCharacters } from "../app/data/leagueData.js";
 
 export default function Home() {
   const [initials, setInitials] = useState<any>([]); // Initials champions
@@ -122,7 +123,7 @@ export default function Home() {
                 ))
               )}
             </div>
-            <p>Answer is : {randomChampion.name}</p>
+            {/* <p>Answer is : {randomChampion.name}</p> */}
           </div>
           
           {/* Indicator */}
