@@ -122,6 +122,7 @@ export default function Home() {
                 ))
               )}
             </div>
+            <p>Answer is : {randomChampion.name}</p>
           </div>
           
           {/* Indicator */}
@@ -195,7 +196,7 @@ export default function Home() {
               <p className="pt-5 pb-3 text-3xl font-bold select-none">Today guess : {randomChampion.name}</p>
               <p className="pb-3 select-none">Total Guess : {guess} times</p>
               <p className="pb-1 select-none">wanna play again ?</p>
-              <p className="pb-1 text-green-300 select-none">🢃</p>
+              <p className="pb-1 select-none">🢃</p>
             <button className=" text-white px-4 py-2 rounded-lg border-2 border-white hover:bg-white hover:text-black transition-all duration-300 cursor-pointer select-none" onClick={playAgain}>Play Again</button>
           </div>
         </div>
