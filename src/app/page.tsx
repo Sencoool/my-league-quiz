@@ -12,6 +12,8 @@ export default function Home() {
   const [randomChampion, setRandomChampion] = useState<any>([]);
   const [guess, setGuess] = useState<number>(0);
   const [winGame, setWinGame] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  const domSearch = useRef<HTMLDivElement>(null);
   const inputRef = useRef<any>(null);
   const winRef = useRef<any>(false);
 
@@ -44,9 +46,21 @@ export default function Home() {
   };
 
   // Tmr, make an arrow can select the champion
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "ArrowDown") {
+      setSelectedIndex((prev) => Math.min(prev + 1, search.length - 1));
+    } else if (event.key === "ArrowUp") {
+      setSelectedIndex((prev) => Math.max(prev - 1, 0));
+    } else if (event.key === "Enter") {
+      if (selectedIndex >= 0 && selectedIndex < search.length) {
+        selectAnswer(search[selectedIndex]);
+      }
+    }
+  }
 
   const selectAnswer = (input: any) => {
     let data: any = [];
+    console.log('Selected:', input.name);
 
     data.push(input);
     setAnswer((data : any) => [...data, input]);
@@ -88,12 +102,16 @@ export default function Home() {
     winRef.current = false;
   };
   
-
-  
   // Get champions
   useEffect(() => {
     getChampions();
   }, []);
+
+  // Reset index when input is empty
+  useEffect(() => {
+    setSelectedIndex(-1);
+  }, [search]);
+  
   
 
   return (
@@ -106,17 +124,19 @@ export default function Home() {
 
           <div className="flex flex-col items-center w-full">
             {/* search */}
-            <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-1/2 rounded-t-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} ref={inputRef} autoComplete="off" />
+            <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-1/2 rounded-t-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} onKeyDown={handleKeyDown} ref={inputRef} autoComplete="off" />
 
             {/* select  */}
-            <div className={`w-1/2 max-h-[200px] overflow-y-auto flex flex-col border bg-neutral-800 rounded-b-lg relative z-10 ${inputRef.current?.value == "" ? 'hidden' : 'block'}} `}>
+            <div ref={domSearch} className={`w-1/2 max-h-[200px] overflow-y-auto flex flex-col border bg-neutral-800 rounded-b-lg relative z-10 ${inputRef.current?.value == "" ? 'hidden' : 'block'}} `}>
               {search.length === 0 && inputRef.current?.value !== "" ? (
                 <div className="flex items-center justify-center gap-4 p-2 border-b">
                   No champions found!
                 </div>
               ) : (
-                search.map((champion: any, index) => (
-                  <div key={index} className="flex items-center gap-4 p-2 border-b border-[#ccc] hover:bg-rose-950 duration-300 cursor-pointer"onClick={() => selectAnswer(champion)}>
+                search.map((champion: any, index: number) => (
+                  <div key={index} className={`flex items-center gap-4 p-2 border-b border-[#ccc] hover:bg-rose-950 duration-300 cursor-pointer ${
+                    selectedIndex === index ? "bg-rose-950" : ""
+                  }`} onClick={() => selectAnswer(champion)}>
                     <img width={50} height={50} src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${champion.id}.png`} alt={champion.name} className="w-10 h-10 object-cover" />
                     {champion.name}
                   </div>
