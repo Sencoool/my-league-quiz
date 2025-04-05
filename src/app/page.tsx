@@ -6,10 +6,10 @@ import { allCharacters } from "../app/data/leagueData.js";
 
 export default function Home() {
   const [initials, setInitials] = useState<Champions[]>([]); // Initials champions
-  const [champions, setChampions] = useState<Champions[]>([]);
+  const [champions, setChampions] = useState<any[]>([]);
   const [search, setSearch] = useState<Champions[]>([]);
   const [answer, setAnswer] = useState<Champions[]>([]);
-  const [randomChampion, setRandomChampion] = useState<Champions[]>([]);
+  const [randomChampion, setRandomChampion] = useState<any>([]);
   const [guess, setGuess] = useState<number>(0);
   const [winGame, setWinGame] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
