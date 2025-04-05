@@ -156,7 +156,7 @@ export default function Home() {
                 ))
               )}
             </div>
-            <p>Answer is : {randomChampion.name}</p>
+            {/* <p>Answer is : {randomChampion.name}</p> */}
           </div>
           
           {/* Indicator */}
