@@ -1378,7 +1378,7 @@ export const allCharacters = [
     },
     {
         name: "Wukong",
-        icon: "https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/Wukong.png",
+        icon: "https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/MonkeyKing.png",
         gender: "Male",
         lane: ["Top","Jungle"],
         resource: "Mana",

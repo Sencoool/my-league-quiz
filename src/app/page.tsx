@@ -5,11 +5,11 @@ import {useEffect, useRef, useState } from "react";
 import { allCharacters } from "../app/data/leagueData.js";
 
 export default function Home() {
-  const [initials, setInitials] = useState<any>([]); // Initials champions
-  const [champions, setChampions] = useState<any>([]);
-  const [search, setSearch] = useState([]);
-  const [answer, setAnswer] = useState<any>([]);
-  const [randomChampion, setRandomChampion] = useState<any>([]);
+  const [initials, setInitials] = useState<Champions[]>([]); // Initials champions
+  const [champions, setChampions] = useState<Champions[]>([]);
+  const [search, setSearch] = useState<Champions[]>([]);
+  const [answer, setAnswer] = useState<Champions[]>([]);
+  const [randomChampion, setRandomChampion] = useState<Champions[]>([]);
   const [guess, setGuess] = useState<number>(0);
   const [winGame, setWinGame] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
@@ -17,16 +17,25 @@ export default function Home() {
   const inputRef = useRef<any>(null);
   const winRef = useRef<any>(false);
 
+  type Champions = {
+    name: string;
+    icon: string;
+    gender: string;
+    lane: string | string[];
+    resource: string;
+    species: string | string[];
+    region: string;
+  };
+
   async function getChampions() {
-    const res = await axios.get(
-      "https://ddragon.leagueoflegends.com/cdn/15.5.1/data/en_US/champion.json"
-    );
-    let championsArray : any = Object.values(res.data.data); // Change object to array of champions
+    const championsArray = allCharacters;
     setInitials(championsArray);
     setChampions(championsArray);
+    console.log(championsArray[1]);
+    
 
     const index = Math.floor(Math.random() * championsArray.length); // Randomize champion
-    setRandomChampion(championsArray[index]);
+    setRandomChampion(championsArray[index]); // Set random champion
   }
 
   const getRandomChampion = () => {
@@ -68,7 +77,7 @@ export default function Home() {
 
     // filter selected champion
     setChampions(champions.filter((champions: any) =>
-      champions.id !== input.id // filter every champion that id is not equal to selected champion (means remove selected champion)
+      champions.name !== input.name // filter every champion that id is not equal to selected champion (means remove selected champion)
     ));
 
     if (inputRef.current) {
@@ -83,9 +92,13 @@ export default function Home() {
     let score = 0;
 
     if (data.name == randomChampion.name) score++;
-    if (data.partype == randomChampion.partype) score++;
+    if (data.lane == randomChampion.lane) score++;
+    if (data.gender == randomChampion.gender) score++;
+    if (data.resource == randomChampion.resource) score++;
+    if (data.region == randomChampion.region) score++;
+    if (data.species == randomChampion.species) score++;
 
-    if (score === 2) {
+    if (score === 6) {
       setWinGame(true);
       winRef.current = true;;
     }
@@ -107,7 +120,7 @@ export default function Home() {
     getChampions();
   }, []);
 
-  // Reset index when input is empty
+  // Reset arrow index when input is empty
   useEffect(() => {
     setSelectedIndex(-1);
   }, [search]);
@@ -119,7 +132,7 @@ export default function Home() {
       <main className="flex flex-col items-center min-h-screen py-2 container mx-auto pt-[100px]">
         
         {/* search box */}
-        <div className="flex flex-col items-center container mx-auto border-2 border-yellow-50 p-4 rounded-lg w-1/2 h-[300px]">
+        <div className="flex flex-col items-center container mx-auto border-2 border-yellow-50 p-4 rounded-lg max-w-1/2 h-[300px]">
         <h1 className="text-3xl font-bold mb-5">League Champions Guessing</h1>
 
           <div className="flex flex-col items-center w-full">
@@ -137,13 +150,13 @@ export default function Home() {
                   <div key={index} className={`flex items-center gap-4 p-2 border-b border-[#ccc] hover:bg-rose-950 duration-300 cursor-pointer ${
                     selectedIndex === index ? "bg-rose-950" : ""
                   }`} onClick={() => selectAnswer(champion)}>
-                    <img width={50} height={50} src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${champion.id}.png`} alt={champion.name} className="w-10 h-10 object-cover" />
+                    <img width={50} height={50} src={`${champion.icon}`} alt={champion.name} className="w-10 h-10 object-cover" />
                     {champion.name}
                   </div>
                 ))
               )}
             </div>
-            {/* <p>Answer is : {randomChampion.name}</p> */}
+            <p>Answer is : {randomChampion.name}</p>
           </div>
           
           {/* Indicator */}
@@ -179,41 +192,57 @@ export default function Home() {
            Guess
            <div className="flex bg-yellow-50 text-black font-extrabold rounded-t-lg mt-5">
             <div className="flex justify-center p-2 w-[150px]">Icon</div>
-            <div className="flex justify-center p-2 w-[150px]">name</div>
-            <div className="flex justify-center p-2 w-[150px]">resources</div>
-            <div className="flex justify-center p-2 w-[150px]">roles</div>
+            <div className="flex justify-center p-2 w-[150px]">Name</div>
+            <div className="flex justify-center p-2 w-[150px]">Lane</div>
+            <div className="flex justify-center p-2 w-[150px]">Gender</div>
+            <div className="flex justify-center p-2 w-[150px]">Resources</div>
+            <div className="flex justify-center p-2 w-[150px]">Region</div>
+            <div className="flex justify-center p-2 w-[150px]">Species</div>
            </div>
         {/* answer */}
            <div>
             {(answer.length === 0) ? (
-              <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[600px]">
+              <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[1050px]">
                 Guess your first answer !
               </div>
             ) : answer.map((champions : any, index : any) => (
               <div className="flex" key={index}>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0s'}}>
-                  <img src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${champions.id}.png`} alt="" className="w-1/2 object-cover"/>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.75s ease-out forwards', animationDelay: '0s'}}>
+                  <img src={`${champions.icon}`} alt="" className="w-1/2 object-cover"/>
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0.5s',backgroundColor: champions.name == randomChampion.name ? '#007f4e' : champions.id.includes(randomChampion.name) ? '#f37324' : '#e12729'}}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0.5s',backgroundColor: champions.name == randomChampion.name ? '#007f4e' : champions.name.includes(randomChampion.name) ? '#f37324' : '#e12729'}}>
                   {champions.name}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1s',backgroundColor: champions.partype == randomChampion.partype ? '#007f4e' : champions.id.includes(randomChampion.partype) ? '#f37324' : '#e12729'}}>  
-                  {champions.partype}
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.0s',backgroundColor: champions.lane == randomChampion.lane ? '#007f4e' : champions.lane.includes(randomChampion.lane) ? '#f37324' : '#e12729'}}>  
+                  {champions.lane}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0 text-center" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: (champions.tags.every((tag: string) => randomChampion.tags.includes(tag))? '#007f4e' : (champions.tags.some((tag: string) => randomChampion.tags.includes(tag))? '#f37324' : '#e12729')) }}>  
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s',backgroundColor: champions.gender == randomChampion.gender ? '#007f4e' : champions.gender.includes(randomChampion.gender) ? '#f37324' : '#e12729'}}>  
+                  {champions.gender}
+                </div>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.0s',backgroundColor: champions.resource == randomChampion.resource ? '#007f4e' : champions.resource.includes(randomChampion.resource) ? '#f37324' : '#e12729'}}>  
+                  {champions.resource}
+                </div>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.5s',backgroundColor: champions.region == randomChampion.region ? '#007f4e' : champions.region.includes(randomChampion.region) ? '#f37324' : '#e12729'}}>  
+                  {champions.region}
+                </div>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '3.0s',backgroundColor: champions.species == randomChampion.species ? '#007f4e' : champions.species.includes(randomChampion.species) ? '#f37324' : '#e12729'}}>  
+                  {champions.species}
+                </div>
+
+                {/* <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0 text-center" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: (champions.tags.every((tag: string) => randomChampion.tags.includes(tag))? '#007f4e' : (champions.tags.some((tag: string) => randomChampion.tags.includes(tag))? '#f37324' : '#e12729')) }}>  
                   {champions.tags.join(", ")}
-                </div>
+                </div> */}
               </div>
             ))}
            </div>
         </div>
         {(winGame) ? (
-          <div className="w-1/4 h-1/2 mt-20 fixed flex items-center justify-center bg-zinc-900 border-2 rounded-lg z-50 opacity-0" style={{ animation: 'answerDown 0.5s ease-out forwards', animationDelay: '2.0s'}}>
+          <div className="w-1/4 h-1/2 mt-20 fixed flex items-center justify-center bg-zinc-900 border-2 rounded-lg z-50 opacity-0" style={{ animation: 'answerDown 1.0s ease-out forwards', animationDelay: '3.5s'}}>
             <div className="flex flex-col items-center p-10 rounded-lg">
               <h2 className="text-3xl font-bold select-none pb-5">
                 Victory !
               </h2>
-              <img src={`https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/${randomChampion.id}.png`} alt="" />
+              <img src={`${randomChampion.icon}`} alt="" />
               <p className="pt-5 pb-3 text-3xl font-bold select-none">Today guess : {randomChampion.name}</p>
               <p className="pb-3 select-none">Total Guess : {guess} times</p>
               <p className="pb-1 select-none">wanna play again ?</p>
