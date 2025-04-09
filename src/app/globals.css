@@ -27,6 +27,12 @@
   background-color: var(--color-green);
 }
 
+.hide-scrollbar {
+  overflow: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #1b1a1a;

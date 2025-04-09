@@ -128,10 +128,10 @@ export default function Home() {
 
   return (
     <>
-      <main className="flex flex-col items-center min-h-screen py-2 container mx-auto pt-[100px]">
+      <main className="flex flex-col items-center min-h-screen py-2 container mx-auto pt-[100px] select-none">
         
         {/* search box */}
-        <div className="flex flex-col items-center container mx-auto border-2 border-yellow-50 p-4 rounded-lg max-w-1/4 min-h-[300px] min-w-3/4 md:min-w-[500px] ">
+        <div className="flex flex-col items-center container mx-auto border-2 border-yellow-50 p-4 rounded-lg max-w-1/4 h-[300px] min-w-3/4 md:min-w-[500px] ">
         <h1 className="text-2xl md:text-3xl font-bold mb-5 text-center">League Champions Guessing</h1>
 
           <div className="flex flex-col items-center w-full">
@@ -159,7 +159,7 @@ export default function Home() {
           </div>
           
           {/* Indicator */}
-          <div className="absolute flex flex-col items-center mt-40 w-[500px]">
+          <div className="absolute flex flex-col items-center mt-40 w-full md-w-[500px]">
             Indicator
             <div className="flex items-center justify-center mx-auto md:gap-5 mt-2">
               <div className="flex justify-center w-[50px]">
@@ -186,10 +186,12 @@ export default function Home() {
           </div>
         </div>
 
-        {/* header */}
-        <div className="flex flex-col items-center mt-10 w-1/2">
-           Guess
-           <div className="flex bg-yellow-50 text-black font-extrabold rounded-t-lg mt-5">
+        <p className="text-2xl font-bold mt-5">Your Guess</p>
+        <p className="md:hidden">Swipe ➜ to see more !!!</p>
+
+        {/* header */}       
+        <div className="flex flex-col md:items-center mt-5 pl-5 pr-5 w-full overflow-x-auto">
+          <div className="min-w-[1050px] flex bg-yellow-50 text-black font-extrabold rounded-t-lg mt-5 sm:min-w-[350px] md:min-w-[500px]">
             <div className="flex justify-center p-2 w-[150px]">Icon</div>
             <div className="flex justify-center p-2 w-[150px]">Name</div>
             <div className="flex justify-center p-2 w-[150px]">Lane</div>
@@ -197,44 +199,42 @@ export default function Home() {
             <div className="flex justify-center p-2 w-[150px]">Resources</div>
             <div className="flex justify-center p-2 w-[150px]">Region</div>
             <div className="flex justify-center p-2 w-[150px]">Species</div>
-           </div>
-        {/* answer */}
-           <div>
-            {(answer.length === 0) ? (
-              <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[1050px]">
+          </div>
+
+          {/* answer */}
+          <div className="min-w-[1050px] sm:min-w-[350px] md:min-w-[500px]">
+            {answer.length === 0 ? (
+              <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-full">
                 Guess your first answer !
               </div>
-            ) : answer.map((champions : any, index : any) => (
+            ) : answer.map((champions: any, index: any) => (
               <div className="flex" key={index}>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.75s ease-out forwards', animationDelay: '0s'}}>
-                  <img src={`${champions.icon}`} alt="" className="w-1/2 object-cover"/>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.75s ease-out forwards', animationDelay: '0s' }}>
+                  <img src={`${champions.icon}`} alt="" className="w-1/2 object-cover" />
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0.5s',backgroundColor: champions.name == randomChampion.name ? '#007f4e' : champions.name.includes(randomChampion.name) ? '#f37324' : '#e12729'}}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0.5s', backgroundColor: champions.name == randomChampion.name ? '#007f4e' : champions.name.includes(randomChampion.name) ? '#f37324' : '#e12729' }}>
                   {champions.name}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.0s',backgroundColor: champions.lane == randomChampion.lane ? '#007f4e' : champions.lane.includes(randomChampion.lane) ? '#f37324' : '#e12729'}}>  
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.0s', backgroundColor: champions.lane == randomChampion.lane ? '#007f4e' : champions.lane.includes(randomChampion.lane) ? '#f37324' : '#e12729' }}>
                   {champions.lane}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s',backgroundColor: champions.gender == randomChampion.gender ? '#007f4e' : champions.gender.includes(randomChampion.gender) ? '#f37324' : '#e12729'}}>  
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: champions.gender == randomChampion.gender ? '#007f4e' : champions.gender.includes(randomChampion.gender) ? '#f37324' : '#e12729' }}>
                   {champions.gender}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.0s',backgroundColor: champions.resource == randomChampion.resource ? '#007f4e' : champions.resource.includes(randomChampion.resource) ? '#f37324' : '#e12729'}}>  
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.0s', backgroundColor: champions.resource == randomChampion.resource ? '#007f4e' : champions.resource.includes(randomChampion.resource) ? '#f37324' : '#e12729' }}>
                   {champions.resource}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.5s',backgroundColor: champions.region == randomChampion.region ? '#007f4e' : champions.region.includes(randomChampion.region) ? '#f37324' : '#e12729'}}>  
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.5s', backgroundColor: champions.region == randomChampion.region ? '#007f4e' : champions.region.includes(randomChampion.region) ? '#f37324' : '#e12729' }}>
                   {champions.region}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '3.0s',backgroundColor: champions.species == randomChampion.species ? '#007f4e' : champions.species.includes(randomChampion.species) ? '#f37324' : '#e12729'}}>  
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '3.0s', backgroundColor: champions.species == randomChampion.species ? '#007f4e' : champions.species.includes(randomChampion.species) ? '#f37324' : '#e12729' }}>
                   {champions.species}
                 </div>
-
-                {/* <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] opacity-0 text-center" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: (champions.tags.every((tag: string) => randomChampion.tags.includes(tag))? '#007f4e' : (champions.tags.some((tag: string) => randomChampion.tags.includes(tag))? '#f37324' : '#e12729')) }}>  
-                  {champions.tags.join(", ")}
-                </div> */}
               </div>
             ))}
-           </div>
+          </div>
         </div>
+
         {(winGame) ? (
           <div className="w-1/4 h-1/2 mt-20 fixed flex items-center justify-center bg-zinc-900 border-2 rounded-lg z-50 opacity-0" style={{ animation: 'answerDown 1.0s ease-out forwards', animationDelay: '3.5s'}}>
             <div className="flex flex-col items-center p-10 rounded-lg">
