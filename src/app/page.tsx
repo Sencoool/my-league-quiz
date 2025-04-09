@@ -1,6 +1,5 @@
 'use client'
 
-import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { allCharacters } from "../app/data/leagueData.js";
 
@@ -132,15 +131,15 @@ export default function Home() {
       <main className="flex flex-col items-center min-h-screen py-2 container mx-auto pt-[100px]">
         
         {/* search box */}
-        <div className="flex flex-col items-center container mx-auto border-2 border-yellow-50 p-4 rounded-lg max-w-1/2 h-[300px]">
-        <h1 className="text-3xl font-bold mb-5">League Champions Guessing</h1>
+        <div className="flex flex-col items-center container mx-auto border-2 border-yellow-50 p-4 rounded-lg max-w-1/4 min-h-[300px] min-w-3/4 md:min-w-[500px] ">
+        <h1 className="text-2xl md:text-3xl font-bold mb-5 text-center">League Champions Guessing</h1>
 
           <div className="flex flex-col items-center w-full">
             {/* search */}
-            <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-1/2 rounded-t-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} onKeyDown={handleKeyDown} ref={inputRef} autoComplete="off" />
+            <input type="text" list="characters" name="search" id="search" className="bg-white text-black p-2 w-3/4 md:w-1/2 rounded-t-lg" placeholder="Type character name . . . ." onChange={e => searchCharacter(e.target.value)} onKeyDown={handleKeyDown} ref={inputRef} autoComplete="off" />
 
             {/* select  */}
-            <div ref={domSearch} className={`w-1/2 max-h-[200px] overflow-y-auto flex flex-col border bg-neutral-800 rounded-b-lg relative z-10 ${inputRef.current?.value == "" ? 'hidden' : 'block'}} `}>
+            <div ref={domSearch} className={`w-3/4 md:w-1/2 max-h-[200px] overflow-y-auto flex flex-col border bg-neutral-800 rounded-b-lg relative z-10 ${inputRef.current?.value == "" ? 'hidden' : 'block'}} `}>
               {search.length === 0 && inputRef.current?.value !== "" ? (
                 <div className="flex items-center justify-center gap-4 p-2 border-b">
                   No champions found!
@@ -162,7 +161,7 @@ export default function Home() {
           {/* Indicator */}
           <div className="absolute flex flex-col items-center mt-40 w-[500px]">
             Indicator
-            <div className="flex items-center justify-center mx-auto gap-5 mt-2">
+            <div className="flex items-center justify-center mx-auto md:gap-5 mt-2">
               <div className="flex justify-center w-[50px]">
                 <img src="/img/Red.png" alt="" className="w-[50px]" />
               </div>
@@ -173,12 +172,12 @@ export default function Home() {
                 <img src="/img/Green.png" alt="" className="w-[50px]" />
               </div>
             </div>
-            <div className="flex items-center justify-center mx-auto gap-5 ">
+            <div className="flex items-center justify-center mx-auto md:gap-5 ">
               <div className="flex justify-center w-[50px]">
                 <div className="flex justify-center">Wrong</div>
               </div>
               <div className="flex justify-center w-[150px]">
-                <div className="flex justify-center">Halfway There</div>
+                <div className="flex justify-center">Almost</div>
               </div>
               <div className="flex justify-center w-[50px]">
                 <div className="flex justify-center">Right</div>
