@@ -202,7 +202,7 @@ export default function Home() {
           </div>
 
           {/* answer */}
-          <div className="min-w-[1050px] sm:min-w-[350px] md:min-w-[500px]">
+          <div className="w-[1050px]">
             {answer.length === 0 ? (
               <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-full">
                 Guess your first answer !
