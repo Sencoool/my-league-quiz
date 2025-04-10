@@ -209,26 +209,30 @@ export default function Home() {
               </div>
             ) : answer.map((champions: any, index: any) => (
               <div className="flex" key={index}>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.75s ease-out forwards', animationDelay: '0s' }}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] slideDown opacity-0" style={{ animation: 'slideDown 0.75s ease-out forwards', animationDelay: '0s' }}>
                   <img src={`${champions.icon}`} alt="" className="w-1/2 object-cover" />
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0.5s', backgroundColor: champions.name == randomChampion.name ? '#007f4e' : champions.name.includes(randomChampion.name) ? '#f37324' : '#e12729' }}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] slideDown opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '0.5s', backgroundColor: champions.name == randomChampion.name ? '#007f4e' : champions.name.includes(randomChampion.name) ? '#f37324' : '#e12729' }}>
                   {champions.name}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.0s', backgroundColor: champions.lane == randomChampion.lane ? '#007f4e' : champions.lane.includes(randomChampion.lane) ? '#f37324' : '#e12729' }}>
-                <img src={`${champions.lane}`} alt="" className="w-1/2 object-cover" />
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] slideDown opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.0s', backgroundColor: champions.lane == randomChampion.lane ? '#007f4e' : champions.lane.includes(randomChampion.lane) ? '#f37324' : '#e12729' }}>
+                  <img src={`${champions.lane}`} alt="" className="w-1/2 object-cover" />
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: champions.gender == randomChampion.gender ? '#007f4e' : champions.gender.includes(randomChampion.gender) ? '#f37324' : '#e12729' }}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] slideDown opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: champions.gender == randomChampion.gender ? '#007f4e' : champions.gender.includes(randomChampion.gender) ? '#f37324' : '#e12729' }}>
                   {champions.gender}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.0s', backgroundColor: champions.resource == randomChampion.resource ? '#007f4e' : champions.resource.includes(randomChampion.resource) ? '#f37324' : '#e12729' }}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] slideDown opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.0s', backgroundColor: champions.resource == randomChampion.resource ? '#007f4e' : champions.resource.includes(randomChampion.resource) ? '#f37324' : '#e12729' }}>
                   {champions.resource}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.5s', backgroundColor: champions.region == randomChampion.region ? '#007f4e' : champions.region.includes(randomChampion.region) ? '#f37324' : '#e12729' }}>
+                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] slideDown opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '2.5s', backgroundColor: champions.region == randomChampion.region ? '#007f4e' : champions.region.includes(randomChampion.region) ? '#f37324' : '#e12729' }}>
                   {champions.region}
                 </div>
-                <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '3.0s', backgroundColor: champions.species == randomChampion.species ? '#007f4e' : champions.species.includes(randomChampion.species) ? '#f37324' : '#e12729' }}>
-                  {champions.species}
+                <div className="flex justify-center items-center text-center border-2 border-yellow-50 p-2 w-[150px] slideDown opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '3.0s', whiteSpace: 'pre-line',
+                  backgroundColor:  champions.species == randomChampion.species ? '#007f4e' : champions.species.includes(randomChampion.species) ? '#f37324' : '#e12729'}}
+              >
+                {Array.isArray(champions.species)
+                  ? champions.species.join('\n')
+                  : champions.species}
                 </div>
               </div>
             ))}
