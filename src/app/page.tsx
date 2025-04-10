@@ -2,6 +2,8 @@
 
 import {useEffect, useRef, useState } from "react";
 import { allCharacters } from "../app/data/leagueData.js";
+import Header from "./components/header";
+import Footer from "./components/footer";
 
 export default function Home() {
   const [initials, setInitials] = useState<Champions[]>([]); // Initials champions
@@ -128,6 +130,7 @@ export default function Home() {
 
   return (
     <>
+      <Header />
       <main className="flex flex-col items-center min-h-screen py-2 container mx-auto pt-[100px] select-none">
         
         {/* search box */}
@@ -263,6 +266,7 @@ export default function Home() {
         </div>
         ) : null }
       </main>
+      <Footer />
     </>
   );
 }
