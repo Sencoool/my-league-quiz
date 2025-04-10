@@ -216,7 +216,7 @@ export default function Home() {
                   {champions.name}
                 </div>
                 <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.0s', backgroundColor: champions.lane == randomChampion.lane ? '#007f4e' : champions.lane.includes(randomChampion.lane) ? '#f37324' : '#e12729' }}>
-                  {champions.lane}
+                <img src={`${champions.lane}`} alt="" className="w-1/2 object-cover" />
                 </div>
                 <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] sm:w-[100px] md:w-[120px] lg:w-[150px] flex-shrink-0 opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: champions.gender == randomChampion.gender ? '#007f4e' : champions.gender.includes(randomChampion.gender) ? '#f37324' : '#e12729' }}>
                   {champions.gender}
