@@ -1398,7 +1398,7 @@ export const allCharacters = [
         name: "Xerath",
         icon: "https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/Xerath.png",
         gender: "Male",
-        lane: ["/img/Top.webp","/img/Support.webp"],
+        lane: ["/img/Middle.webp","/img/Support.webp"],
         resource: "Mana",
         species: "Ascended",
         region: "Shurima",

@@ -216,7 +216,15 @@ export default function Home() {
                   {champions.name}
                 </div>
                 <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] slideDown opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.0s', backgroundColor: champions.lane == randomChampion.lane ? '#007f4e' : champions.lane.includes(randomChampion.lane) ? '#f37324' : '#e12729' }}>
-                  <img src={`${champions.lane}`} alt="" className="w-1/2 object-cover" />
+                {(Array.isArray(champions.lane) ? champions.lane : [champions.lane]).map((laneImg : string, index : number) => (
+                  <div key={index} className="flex justify-center items-center w-[50%]">
+                    <img
+                      src={laneImg}
+                      alt=""
+                      className="w-full object-cover"
+                    />
+                  </div>
+                ))}
                 </div>
                 <div className="flex justify-center items-center border-2 border-yellow-50 p-2 w-[150px] slideDown opacity-0" style={{ animation: 'slideDown 0.5s ease-out forwards', animationDelay: '1.5s', backgroundColor: champions.gender == randomChampion.gender ? '#007f4e' : champions.gender.includes(randomChampion.gender) ? '#f37324' : '#e12729' }}>
                   {champions.gender}
