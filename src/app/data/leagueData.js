@@ -785,7 +785,7 @@ export const allCharacters = [
     {
         name: "Nautilus",
         icon: "https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/Nautilus.png",
-        gender: "Female",
+        gender: "Male",
         lane: "/img/Support.webp",
         resource: "Mana",
         species: "Revenant",
@@ -840,7 +840,7 @@ export const allCharacters = [
         name: "Olaf",
         icon: "https://ddragon.leagueoflegends.com/cdn/15.5.1/img/champion/Olaf.png",
         gender: "Male",
-        lane: ["/img/Top.webp","Jungle"],
+        lane: ["/img/Top.webp","/img/Jungle.webp"],
         resource: "Mana",
         species: "Human",
         region: "Freljord",
