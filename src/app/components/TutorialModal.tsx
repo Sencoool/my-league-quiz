@@ -26,12 +26,12 @@ export default function TutorialModal({ show, onClose, title, content }: Tutoria
     <>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/80 z-50 animate-fade-in will-change-opacity" 
+        className="fixed inset-0 bg-black/80 z-[100] animate-fade-in will-change-opacity" 
         onClick={onClose} 
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 pointer-events-none">
+      <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 pointer-events-none">
         <div 
           className="pointer-events-auto relative w-full max-w-md bg-[#1E293B] border border-white/10 rounded-3xl shadow-2xl overflow-hidden will-change-transform"
           style={{

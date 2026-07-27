@@ -8,14 +8,16 @@ export const api = axios.create({
   },
 });
 
-// Optionally, you can add interceptors here later if you need to attach JWT tokens to every request
-// api.interceptors.request.use(config => {
-//   const token = localStorage.getItem('token');
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
+// Attach JWT token to every request if available
+api.interceptors.request.use(config => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('pg_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
 
 // Unwrap NestJS ResponseInterceptor payload
 api.interceptors.response.use((response) => {
@@ -112,9 +114,34 @@ export const UserService = {
     const response = await api.get(`/users/${id}`);
     return response.data;
   },
+  getMe: async (): Promise<UserProfileResponse> => {
+    const response = await api.get('/users/me');
+    return response.data;
+  },
   getLeaderboard: async (page: number = 1): Promise<LeaderboardUserResponse[]> => {
     const response = await api.get(`/users/leaderboard?page=${page}`);
     return response.data;
+  },
+};
+
+export const AuthService = {
+  /** Redirect browser to Google OAuth */
+  loginWithGoogle: () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    window.location.href = `${apiUrl}/auth/google`;
+  },
+  /** Save token to localStorage */
+  saveToken: (token: string) => {
+    localStorage.setItem('pg_token', token);
+  },
+  /** Remove token (logout) */
+  clearToken: () => {
+    localStorage.removeItem('pg_token');
+  },
+  /** Check if a token exists */
+  hasToken: (): boolean => {
+    if (typeof window === 'undefined') return false;
+    return !!localStorage.getItem('pg_token');
   },
 };
 

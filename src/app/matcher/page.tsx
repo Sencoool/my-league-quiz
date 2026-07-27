@@ -358,22 +358,23 @@ export default function MatcherPage() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center flex-grow py-4 container mx-auto xl:pt-[90px] pt-[40px] select-none text-white z-10 relative px-4">
+      <main className="flex flex-col items-center flex-grow py-4 container mx-auto xl:pt-[90px] pt-[40px] select-none text-white px-4">
 
         {/* Stats Card */}
         <div className="flex flex-col items-center w-full bg-[#1E293B] border border-white/10 p-6 rounded-3xl shadow-2xl max-w-5xl mb-5 relative">
           
-          <button 
-            onClick={() => setShowTutorial(true)}
-            className="absolute top-6 right-6 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
-            title="How to play"
-          >
-            ?
-          </button>
-
-          <h1 className="text-3xl md:text-4xl font-semibold mb-1 text-center tracking-wide">
-            Champion <span className="text-blue-400 font-light">Icon Matcher</span>
-          </h1>
+          <div className="w-full relative flex flex-col items-center justify-center mb-1 mt-2">
+            <h1 className="text-3xl md:text-4xl font-semibold text-center tracking-wide px-12">
+              Champion <span className="text-blue-400 font-light">Icon Matcher</span>
+            </h1>
+            <button 
+              onClick={() => setShowTutorial(true)}
+              className="absolute right-0 top-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+              title="How to play"
+            >
+              ?
+            </button>
+          </div>
           <p className="text-zinc-400 text-sm mb-4">Match all 16 pairs of champion icons as fast as you can!</p>
 
           <div className="flex items-center justify-center gap-6 md:gap-12 w-full flex-wrap">
@@ -453,7 +454,7 @@ export default function MatcherPage() {
 
             {/* Board: no backdrop-blur, solid bg for performance */}
             <div className="w-full max-w-5xl bg-[#1E293B] border border-white/10 p-4 md:p-5 rounded-3xl shadow-2xl">
-              <div className="grid grid-cols-8 gap-2 md:gap-3">
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 md:gap-3">
                 {cards.map((card) => (
                   <Card
                     key={card.uid}

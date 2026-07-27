@@ -147,21 +147,22 @@ export default function Jigsaw() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center flex-grow py-2 container mx-auto xl:pt-[100px] pt-[50px] select-none text-white z-10 relative">
+      <main className="flex flex-col items-center flex-grow py-2 container mx-auto xl:pt-[100px] pt-[50px] select-none text-white">
         
-        <div className="flex flex-col items-center container mx-auto bg-[#1E293B]/95 border border-white/10 p-8 rounded-3xl shadow-2xl max-w-1/4 md:min-w-[600px] lg:min-w-[800px] relative">
+        <div className="flex flex-col items-center w-full bg-[#1E293B]/95 border border-white/10 p-4 sm:p-8 rounded-3xl shadow-2xl max-w-[95%] md:w-[600px] lg:w-[800px] relative">
           
-          <button 
-            onClick={() => setShowTutorial(true)}
-            className="absolute top-6 right-6 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
-            title="How to play"
-          >
-            ?
-          </button>
-
-          <h1 className="text-3xl md:text-4xl font-semibold mb-2 text-center tracking-wide">
-            Poro Guess <span className="text-blue-400 font-light">Jigsaw</span>
-          </h1>
+          <div className="w-full relative flex items-center justify-center mb-6 mt-2">
+            <h1 className="text-3xl md:text-4xl font-semibold text-center tracking-wide px-12">
+              Poro Guess <span className="text-blue-400 font-light">Jigsaw</span>
+            </h1>
+            <button 
+              onClick={() => setShowTutorial(true)}
+              className="absolute right-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+              title="How to play"
+            >
+              ?
+            </button>
+          </div>
           
           <div className="flex justify-between w-full mb-6 px-2">
             <div className="text-zinc-400 font-medium text-sm">
@@ -217,10 +218,10 @@ export default function Jigsaw() {
                       className="w-12 h-12 rounded-full object-cover shadow-sm border border-black/10"
                       onError={(e) => (e.currentTarget.src = "/img/Red.png")}
                     />
-                    <span className="tracking-wide uppercase">{targetChamp.name}</span>
+                    <span className="tracking-wide uppercase truncate">{targetChamp.name}</span>
                   </div>
                   <div className="text-zinc-500 group-hover:text-zinc-800 transition-colors text-sm font-bold flex items-center gap-1">
-                    <span>View Result</span>
+                    <span className="hidden sm:inline">View Result</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                   </div>
                 </div>
@@ -230,7 +231,7 @@ export default function Jigsaw() {
                 type="text"
                 name="search"
                 id="search"
-                className="bg-[#0B1121]/80 text-white placeholder-zinc-500 px-6 py-4 w-full md:w-3/4 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/50 border border-white/20 transition-all text-lg shadow-inner"
+                className="bg-[#0B1121]/80 text-white placeholder-zinc-500 px-4 sm:px-6 py-3 sm:py-4 w-full md:w-3/4 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/50 border border-white/20 transition-all text-base sm:text-lg shadow-inner"
                 placeholder="Type a champion name..."
                 onChange={(e) => searchCharacter(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -243,7 +244,7 @@ export default function Jigsaw() {
             {/* select dropdown */}
             <div
               ref={domSearch}
-              className={`w-full md:w-3/4 max-h-[250px] overflow-y-auto flex flex-col border border-white/10 bg-zinc-900 rounded-xl absolute bottom-[70px] shadow-2xl z-50 ${inputRef.current?.value == "" || progress?.isWon ? "hidden" : "block"}`}
+              className={`w-full md:w-3/4 max-h-[250px] overflow-y-auto flex flex-col border border-white/10 bg-zinc-900 rounded-xl absolute bottom-full mb-2 shadow-2xl z-50 ${inputRef.current?.value == "" || progress?.isWon ? "hidden" : "block"}`}
             >
               {search.length === 0 && inputRef.current?.value !== "" ? (
                 <div className="flex items-center justify-center p-4 text-zinc-500 italic">

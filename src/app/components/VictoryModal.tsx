@@ -332,12 +332,12 @@ export default function VictoryModal({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/80 z-40 animate-fade-in"
+        className="fixed inset-0 bg-black/80 z-[100] animate-fade-in"
         onClick={onClose}
       />
 
       {/* Container for perfect centering */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+      <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 pointer-events-none">
         {/* Modal */}
         <div
           className={`pointer-events-auto relative w-full max-w-sm opacity-0 rounded-3xl

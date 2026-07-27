@@ -14,16 +14,16 @@ const GuessRow = ({ guess, index, isWon, isNew }: { guess: any, index: number, i
   const getColor = (val?: string) => {
     switch (val) {
       case 'MATCH':
-        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+        return 'bg-[#062c1e] text-emerald-400 border-emerald-500/30';
       case 'PARTIAL':
-        return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+        return 'bg-[#3f2008] text-amber-400 border-amber-500/30';
       case 'MISMATCH':
-        return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+        return 'bg-[#3f0f15] text-rose-400 border-rose-500/30';
       case 'HIGHER':
       case 'LOWER':
-        return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+        return 'bg-[#3f0f15] text-rose-400 border-rose-500/30';
       default:
-        return 'bg-zinc-800/50 text-zinc-300 border-white/5';
+        return 'bg-[#111827] text-zinc-300 border-white/5';
     }
   };
 
@@ -34,29 +34,29 @@ const GuessRow = ({ guess, index, isWon, isNew }: { guess: any, index: number, i
   } : { opacity: 1 };
 
   return (
-    <div className="grid grid-cols-8 gap-2">
-      <div className="flex justify-center items-center bg-zinc-800/80 border border-white/5 rounded-xl p-2 w-[150px] shadow-sm" style={getStyle(0)}>
+    <div className="w-[1256px] grid grid-cols-8 gap-2">
+      <div className={`flex justify-center items-center rounded-xl p-2 w-[150px] shadow-sm border ${isWon && index === 0 ? "bg-[#062c1e] border-emerald-500/30" : "bg-[#111827] border-white/5"}`} style={getStyle(0)}>
         <img src={getImageUrl(guess.champion.iconPath)} alt={guess.champion.name} className="w-14 h-14 object-cover rounded shadow-md border border-white/10" onError={(e) => (e.currentTarget.src = "/img/Red.png")} />
       </div>
-      <div className={`flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-bold tracking-wide border text-center ${isWon && index === 0 ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-zinc-800/80 text-zinc-300 border-white/5"}`} style={getStyle(0.1)}>
+      <div className={`flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-bold tracking-wide border text-center ${isWon && index === 0 ? "bg-[#062c1e] text-emerald-400 border-emerald-500/30" : "bg-[#111827] text-zinc-300 border-white/5"}`} style={getStyle(0.1)}>
         {guess.champion.name}
       </div>
-      <div className={`flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.gender)}`} style={getStyle(0.2)}>
+      <div className={`relative z-10 flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.gender)}`} style={getStyle(0.2)}>
         {guess.champion.gender}
       </div>
-      <div className={`flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.role)}`} style={getStyle(0.3)}>
+      <div className={`relative z-10 flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.role)}`} style={getStyle(0.3)}>
         {guess.champion.role}
       </div>
-      <div className={`flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.damageType)}`} style={getStyle(0.4)}>
+      <div className={`relative z-10 flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.damageType)}`} style={getStyle(0.4)}>
         {guess.champion.damageType}
       </div>
-      <div className={`flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.resource)}`} style={getStyle(0.5)}>
+      <div className={`relative z-10 flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.resource)}`} style={getStyle(0.5)}>
         {guess.champion.resource}
       </div>
-      <div className={`flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.rangeType)}`} style={getStyle(0.6)}>
+      <div className={`relative z-10 flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-medium border text-center ${getColor(guess.comparison?.rangeType)}`} style={getStyle(0.6)}>
         {guess.champion.rangeType}
       </div>
-      <div className={`flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-bold border relative text-center ${getColor(guess.comparison?.yearRelease)}`} style={getStyle(0.7)}>
+      <div className={`relative z-10 flex justify-center items-center rounded-xl p-3 w-[150px] shadow-sm font-bold border text-center ${getColor(guess.comparison?.yearRelease)}`} style={getStyle(0.7)}>
         {guess.champion.yearRelease}
         {guess.comparison?.yearRelease === 'HIGHER' && <span className="absolute right-4 font-black text-xl animate-bounce">↑</span>}
         {guess.comparison?.yearRelease === 'LOWER' && <span className="absolute right-4 font-black text-xl animate-bounce">↓</span>}
@@ -207,22 +207,23 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center flex-grow py-2 container mx-auto xl:pt-[100px] pt-[50px] select-none text-white z-10 relative">
+      <main className="flex flex-col items-center flex-grow py-2 container mx-auto xl:pt-[100px] pt-[50px] select-none text-white">
         
         {/* search box container */}
         <div className="flex flex-col items-center container mx-auto bg-[#1E293B]/95 border border-white/10 p-8 rounded-3xl shadow-2xl max-w-1/4 min-h-[300px] min-w-3/4 md:min-w-[500px] relative">
           
-          <button 
-            onClick={() => setShowTutorial(true)}
-            className="absolute top-6 right-6 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
-            title="How to play"
-          >
-            ?
-          </button>
-
-          <h1 className="text-3xl md:text-4xl font-semibold mb-8 text-center tracking-wide">
-            Poro Guess <span className="text-blue-400 font-light">Classic</span>
-          </h1>
+          <div className="w-full relative flex items-center justify-center mb-6 mt-2">
+            <h1 className="text-3xl md:text-4xl font-semibold text-center tracking-wide px-12">
+              Poro Guess <span className="text-blue-400 font-light">Classic</span>
+            </h1>
+            <button 
+              onClick={() => setShowTutorial(true)}
+              className="absolute right-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+              title="How to play"
+            >
+              ?
+            </button>
+          </div>
 
           <div className="w-[85%] md:w-3/4 flex flex-col items-center justify-center relative z-20">
             {progress?.isWon && targetChamp ? (
@@ -239,10 +240,10 @@ export default function Home() {
                       className="w-12 h-12 rounded-full object-cover shadow-sm border border-black/10"
                       onError={(e) => (e.currentTarget.src = "/img/Red.png")}
                     />
-                    <span className="tracking-wide uppercase">{targetChamp.name}</span>
+                    <span className="tracking-wide uppercase truncate">{targetChamp.name}</span>
                   </div>
                   <div className="text-zinc-500 group-hover:text-zinc-800 transition-colors text-sm font-bold flex items-center gap-1">
-                    <span>View Result</span>
+                    <span className="hidden sm:inline">View Result</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                   </div>
                 </div>
@@ -340,12 +341,16 @@ export default function Home() {
           )}
         </div>
 
-        <p className="md:hidden text-zinc-500 text-sm mb-4 bg-black/50 px-3 py-1 rounded-full mt-4">Swipe ➜ to see more</p>
+        <div className="md:hidden flex items-center gap-2 text-zinc-400 text-sm mb-2 mt-6 px-4 py-1.5 bg-black/40 rounded-full border border-white/5 shadow-inner animate-pulse">
+          <span>Swipe to view stats</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
 
         {/* Table Container */}
-        <div className="flex flex-col items-center mt-4 pl-5 pr-5 w-full overflow-x-auto scrollbar-hidden">
-          {/* Table Header */}
-          <div className="w-[1256px] grid grid-cols-8 gap-2 bg-zinc-800/95 text-zinc-400 font-bold uppercase tracking-wider rounded-xl mb-4 shadow-lg border border-white/5">
+        <div className="mt-4 px-5 w-full overflow-x-auto scrollbar-hidden">
+          <div className="w-max mx-auto flex flex-col items-center">
+            {/* Table Header */}
+          <div className="w-[1256px] grid grid-cols-8 gap-2 bg-zinc-800/95 text-zinc-400 font-bold uppercase tracking-wider rounded-xl mb-4 shadow-lg border border-white/5 relative z-40">
             <div className="flex justify-center items-center py-4 w-[150px]">Icon</div>
             <div className="flex justify-center items-center py-4 w-[150px]">Name</div>
             <div className="flex justify-center items-center py-4 w-[150px]">Gender</div>
@@ -378,6 +383,7 @@ export default function Home() {
             )}
           </div>
         </div>
+      </div>
 
         {/* Victory Modal */}
         <VictoryModal

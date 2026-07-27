@@ -6,6 +6,7 @@ import {
   UserProgressResponse,
   ChampionEntity,
   UserService,
+  AuthService,
   DailyChallengeService,
   ChampionService,
   UserProgressService
@@ -43,6 +44,7 @@ interface GameState {
   makeGuess: (championId?: number, options?: { moves?: number; timeElapsed?: number; isWon?: boolean; score?: number }) => Promise<void>;
   refreshUser: () => Promise<void>;
   resetProgress: () => void;
+  logout: () => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -71,8 +73,23 @@ export const useGameStore = create<GameState>()(
       // Initialize User Session
       initializeSession: async () => {
         const { user } = get();
+        
+        // 1. If JWT token exists, try to use it first
+        if (AuthService.hasToken()) {
+          try {
+            set({ isLoadingUser: true });
+            const me = await UserService.getMe();
+            set({ user: me, isLoadingUser: false });
+            return;
+          } catch (e) {
+            // Token expired or invalid — clear it and fall through to guest
+            console.warn('JWT token invalid, clearing...', e);
+            AuthService.clearToken();
+          }
+        }
+
+        // 2. If we have a user in state, refresh from server
         if (user) {
-          // Verify user exists or refresh profile
           try {
             set({ isLoadingUser: true });
             const freshUser = await UserService.getUser(user.id);
@@ -83,7 +100,7 @@ export const useGameStore = create<GameState>()(
           }
         }
         
-        // Create new guest
+        // 3. Create new guest
         try {
           set({ isLoadingUser: true });
           const newGuest = await UserService.createGuest();
@@ -210,6 +227,11 @@ export const useGameStore = create<GameState>()(
       },
 
       resetProgress: () => set({ classicProgress: null, jigsawProgress: null, traitsProgress: null }),
+
+      logout: () => {
+        AuthService.clearToken();
+        set({ user: null });
+      },
     }),
     {
       name: 'poro-guess-storage',

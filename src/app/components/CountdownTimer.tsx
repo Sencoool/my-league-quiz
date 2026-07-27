@@ -30,9 +30,9 @@ interface CountdownTimerProps {
 export default function CountdownTimer({ className }: CountdownTimerProps) {
   const timeLeft = useCountdown();
   return (
-    <div className={`flex items-center justify-center gap-1.5 ${className || "text-zinc-600 text-xs"}`}>
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-      <span>Next daily in <span className="font-mono font-bold text-blue-400">{timeLeft}</span></span>
+    <div className={`flex items-center justify-center gap-1.5 flex-wrap text-center ${className || "text-zinc-600 text-xs"}`}>
+      <svg className="shrink-0" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <span>Next daily in <span className="font-mono font-bold text-blue-400 whitespace-nowrap">{timeLeft}</span></span>
     </div>
   );
 }

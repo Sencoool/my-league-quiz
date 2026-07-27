@@ -57,7 +57,7 @@ export default function HomePage() {
     <>
       <Header />
       
-      <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-8 z-10 w-full relative">
+      <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-8 w-full">
         {/* Central Container */}
         <div className="w-full max-w-4xl flex flex-col items-center bg-[#111827]/80 rounded-[2.5rem] p-6 sm:p-12 shadow-2xl border border-white/5">
           

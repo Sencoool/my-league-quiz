@@ -165,22 +165,23 @@ export default function TraitsPage() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center flex-grow py-2 container mx-auto xl:pt-[80px] pt-[30px] select-none text-white z-10 relative">
+      <main className="flex flex-col items-center flex-grow py-2 container mx-auto xl:pt-[80px] pt-[30px] select-none text-white">
         
         {/* Main Card */}
         <div className="flex flex-col items-center w-full bg-[#1c2331] border border-white/5 p-6 md:p-10 rounded-3xl shadow-2xl max-w-[95%] md:w-[600px] relative">
           
-          <button 
-            onClick={() => setShowTutorial(true)}
-            className="absolute top-6 right-6 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
-            title="How to play"
-          >
-            ?
-          </button>
-
-          <h1 className="text-2xl font-medium mb-6 text-center text-zinc-200 tracking-wide">
-            Traits game
-          </h1>
+          <div className="w-full relative flex items-center justify-center mb-6 mt-2">
+            <h1 className="text-2xl sm:text-3xl font-medium text-center text-zinc-200 tracking-wide px-12">
+              Traits game
+            </h1>
+            <button 
+              onClick={() => setShowTutorial(true)}
+              className="absolute right-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+              title="How to play"
+            >
+              ?
+            </button>
+          </div>
           
           <div className="flex justify-between w-full mb-6 px-2">
             <div className="text-zinc-400 font-medium text-sm">
@@ -253,10 +254,10 @@ export default function TraitsPage() {
                       className="w-10 h-10 rounded-full object-cover shadow-sm border border-black/10"
                       onError={(e) => (e.currentTarget.src = "/img/Red.png")}
                     />
-                    <span className="tracking-wide uppercase">{targetChamp.name}</span>
+                    <span className="tracking-wide uppercase truncate">{targetChamp.name}</span>
                   </div>
                   <div className="text-zinc-500 group-hover:text-zinc-800 transition-colors text-sm font-bold flex items-center gap-1">
-                    <span>View Result</span>
+                    <span className="hidden sm:inline">View Result</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                   </div>
                 </div>
