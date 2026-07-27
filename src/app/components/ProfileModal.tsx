@@ -238,6 +238,7 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState(user.username);
   const [isSavingName, setIsSavingName] = useState(false);
+  const [nameError, setNameError] = useState("");
   
   // Avatar Editing State
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
@@ -249,23 +250,29 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
       setNewName(user.username);
       setIsEditingName(false);
       setShowAvatarPicker(false);
+      setNameError("");
     }
   }, [show, user.username]);
 
   const handleSaveName = async () => {
     if (!newName.trim() || newName === user.username) {
       setIsEditingName(false);
+      setNameError("");
       return;
     }
     try {
+      setNameError("");
       setIsSavingName(true);
       await UserService.updateUser(user.id, { username: newName.trim() });
       await useGameStore.getState().refreshUser();
       setIsEditingName(false);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Failed to update username", e);
-      // Fallback: reset name
-      setNewName(user.username);
+      if (e.response?.status === 409) {
+        setNameError("This username is already taken");
+      } else {
+        setNameError("Failed to update username");
+      }
     } finally {
       setIsSavingName(false);
     }
@@ -292,6 +299,9 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
     const fetchAll = async () => {
       setLoading(true);
       try {
+        if (championsList.length === 0) {
+          await useGameStore.getState().fetchInitialData();
+        }
         const chs = await DailyChallengeService.getAll();
         setChallenges(chs);
 
@@ -383,38 +393,47 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
 
             <div className="flex-1 min-w-0 pt-1">
               {isEditingName ? (
-                <div className="flex items-center gap-2 mb-1">
-                  <input
-                    type="text"
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                    disabled={isSavingName}
-                    maxLength={30}
-                    className="w-full max-w-[200px] px-2 py-1 bg-zinc-900 border border-zinc-700 rounded-md text-white text-lg font-bold focus:outline-none focus:border-emerald-500 disabled:opacity-50"
-                    autoFocus
-                    onKeyDown={(e) => e.key === "Enter" && handleSaveName()}
-                  />
-                  <button
-                    onClick={handleSaveName}
-                    disabled={isSavingName || !newName.trim()}
-                    className="p-1.5 rounded-md bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors disabled:opacity-50 cursor-pointer"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setNewName(user.username);
-                      setIsEditingName(false);
-                    }}
-                    disabled={isSavingName}
-                    className="p-1.5 rounded-md bg-zinc-800/80 text-zinc-400 hover:text-white transition-colors disabled:opacity-50 cursor-pointer"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                  </button>
+                <div className="flex flex-col gap-1 mb-1">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={newName}
+                      onChange={(e) => {
+                        setNewName(e.target.value);
+                        setNameError("");
+                      }}
+                      disabled={isSavingName}
+                      maxLength={15}
+                      className={`w-full max-w-[200px] px-2 py-1 bg-zinc-900 border ${nameError ? 'border-red-500' : 'border-zinc-700'} rounded-md text-white text-lg font-bold focus:outline-none focus:border-emerald-500 disabled:opacity-50`}
+                      autoFocus
+                      onKeyDown={(e) => e.key === "Enter" && handleSaveName()}
+                    />
+                    <button
+                      onClick={handleSaveName}
+                      disabled={isSavingName || !newName.trim()}
+                      className="p-1.5 rounded-md bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setNewName(user.username);
+                        setIsEditingName(false);
+                        setNameError("");
+                      }}
+                      disabled={isSavingName}
+                      className="p-1.5 rounded-md bg-zinc-800/80 text-zinc-400 hover:text-white transition-colors disabled:opacity-50 cursor-pointer"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
+                  {nameError && (
+                    <span className="text-xs text-red-500 font-medium px-1 drop-shadow-sm">{nameError}</span>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
@@ -559,6 +578,15 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
           </div>
         </div>
       </div>
+
+      {showAvatarPicker && (
+        <AvatarPickerModal
+          user={user}
+          championsList={championsList}
+          onClose={() => setShowAvatarPicker(false)}
+          onSelect={handleSelectAvatar}
+        />
+      )}
     </>
   );
 }

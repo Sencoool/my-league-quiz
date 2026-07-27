@@ -237,13 +237,27 @@ export const useGameStore = create<GameState>()(
 
       resetProgress: () => set({ classicProgress: null, jigsawProgress: null, traitsProgress: null, matcherProgress: null }),
 
-      logout: () => {
+      logout: async () => {
         AuthService.clearToken();
-        set({ user: null });
         // Clear local traits state to prevent state bleed between accounts
         import('./useTraitsStore').then(({ useTraitsStore }) => {
           useTraitsStore.getState().clearAll();
         });
+
+        try {
+          // Immediately create a new guest account to replace the logged out user
+          const newGuest = await UserService.createGuest();
+          set({ 
+            user: newGuest, 
+            classicProgress: null, 
+            jigsawProgress: null, 
+            traitsProgress: null, 
+            matcherProgress: null 
+          });
+        } catch (e) {
+          console.error("Failed to create guest session after logout:", e);
+          set({ user: null });
+        }
       },
     }),
     {
