@@ -14,6 +14,7 @@ interface TraitsState {
   revealTrait: (challengeId: number, traitIndex: number) => void;
   addUnlock: (challengeId: number) => void;
   giveUp: (challengeId: number) => void;
+  clearAll: () => void;
 }
 
 export const useTraitsStore = create<TraitsState>()(
@@ -95,6 +96,9 @@ export const useTraitsStore = create<TraitsState>()(
           },
         });
         useGameStore.getState().triggerVictoryModal('TRAITS');
+      },
+      clearAll: () => {
+        set({ games: {} });
       }
     }),
     {

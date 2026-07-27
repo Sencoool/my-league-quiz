@@ -65,7 +65,7 @@ export default function HomePage() {
           <div className="mb-10 sm:mb-14 text-center animate-fade-in flex flex-col items-center" style={{ animation: "slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
             <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4 filter drop-shadow-[0_0_15px_rgba(59,130,246,0.3)] group">
               <Image 
-                src="/img/logo.png?v=2" 
+                src="/img/logo.png" 
                 alt="Poro Guess Logo" 
                 fill 
                 className="object-cover rounded-full border border-white/20 shadow-xl transition-transform duration-500 group-hover:scale-105" 

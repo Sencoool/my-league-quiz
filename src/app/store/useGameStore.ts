@@ -21,6 +21,7 @@ interface GameState {
   classicChallenge: DailyChallengeResponse | null;
   jigsawChallenge: DailyChallengeResponse | null;
   traitsChallenge: DailyChallengeResponse | null;
+  matcherChallenge: DailyChallengeResponse | null;
   activeChallenge: DailyChallengeResponse | null;
   championsList: ChampionEntity[];
   isLoadingData: boolean;
@@ -29,6 +30,7 @@ interface GameState {
   classicProgress: UserProgressResponse | null;
   jigsawProgress: UserProgressResponse | null;
   traitsProgress: UserProgressResponse | null;
+  matcherProgress: UserProgressResponse | null;
   isSubmittingGuess: boolean;
   
   // Modal trigger state
@@ -39,7 +41,7 @@ interface GameState {
   // Actions
   initializeSession: () => Promise<void>;
   fetchInitialData: () => Promise<void>;
-  setActiveMode: (mode: 'CLASSIC' | 'JIGSAW' | 'TRAITS') => Promise<void>;
+  setActiveMode: (mode: 'CLASSIC' | 'JIGSAW' | 'TRAITS' | 'MATCHER') => Promise<void>;
   loadProgress: () => Promise<void>;
   makeGuess: (championId?: number, options?: { moves?: number; timeElapsed?: number; isWon?: boolean; score?: number }) => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -57,6 +59,7 @@ export const useGameStore = create<GameState>()(
       classicChallenge: null,
       jigsawChallenge: null,
       traitsChallenge: null,
+      matcherChallenge: null,
       activeChallenge: null,
       championsList: [],
       isLoadingData: false,
@@ -64,6 +67,7 @@ export const useGameStore = create<GameState>()(
       classicProgress: null,
       jigsawProgress: null,
       traitsProgress: null,
+      matcherProgress: null,
       isSubmittingGuess: false,
       
       showVictoryModalMode: null,
@@ -123,11 +127,13 @@ export const useGameStore = create<GameState>()(
           const classicChallenge = challenges.find(c => c.mode === 'CLASSIC') || null;
           const jigsawChallenge = challenges.find(c => c.mode === 'JIGSAW') || null;
           const traitsChallenge = challenges.find(c => c.mode === 'TRAITS') || null;
+          const matcherChallenge = challenges.find(c => c.mode === 'MATCHER') || null;
           
           set({ 
             classicChallenge,
             jigsawChallenge,
             traitsChallenge,
+            matcherChallenge,
             // default to classic, or can be set by the page
             activeChallenge: get().activeChallenge || classicChallenge,
             championsList: champions,
@@ -146,9 +152,9 @@ export const useGameStore = create<GameState>()(
       },
       
       // Set active mode
-      setActiveMode: async (mode: 'CLASSIC' | 'JIGSAW' | 'TRAITS') => {
-        const { classicChallenge, jigsawChallenge, traitsChallenge, activeChallenge } = get();
-        const nextChallenge = mode === 'CLASSIC' ? classicChallenge : mode === 'JIGSAW' ? jigsawChallenge : traitsChallenge;
+      setActiveMode: async (mode: 'CLASSIC' | 'JIGSAW' | 'TRAITS' | 'MATCHER') => {
+        const { classicChallenge, jigsawChallenge, traitsChallenge, matcherChallenge, activeChallenge } = get();
+        const nextChallenge = mode === 'CLASSIC' ? classicChallenge : mode === 'JIGSAW' ? jigsawChallenge : mode === 'TRAITS' ? traitsChallenge : matcherChallenge;
         
         if (nextChallenge && nextChallenge.id !== activeChallenge?.id) {
           set({ activeChallenge: nextChallenge });
@@ -164,6 +170,8 @@ export const useGameStore = create<GameState>()(
         
         const isClassic = activeChallenge.mode === 'CLASSIC';
         const isJigsaw = activeChallenge.mode === 'JIGSAW';
+        const isTraits = activeChallenge.mode === 'TRAITS';
+        const isMatcher = activeChallenge.mode === 'MATCHER';
         
         try {
           const progress = await UserProgressService.getProgress(user.id, activeChallenge.id);
@@ -171,7 +179,8 @@ export const useGameStore = create<GameState>()(
           if (get().activeChallenge?.id === activeChallenge.id) {
             if (isClassic) set({ classicProgress: progress });
             else if (isJigsaw) set({ jigsawProgress: progress });
-            else set({ traitsProgress: progress });
+            else if (isTraits) set({ traitsProgress: progress });
+            else if (isMatcher) set({ matcherProgress: progress });
           }
         } catch (e: any) {
           // Prevent race condition
@@ -226,11 +235,15 @@ export const useGameStore = create<GameState>()(
         }
       },
 
-      resetProgress: () => set({ classicProgress: null, jigsawProgress: null, traitsProgress: null }),
+      resetProgress: () => set({ classicProgress: null, jigsawProgress: null, traitsProgress: null, matcherProgress: null }),
 
       logout: () => {
         AuthService.clearToken();
         set({ user: null });
+        // Clear local traits state to prevent state bleed between accounts
+        import('./useTraitsStore').then(({ useTraitsStore }) => {
+          useTraitsStore.getState().clearAll();
+        });
       },
     }),
     {

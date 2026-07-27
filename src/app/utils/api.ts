@@ -107,11 +107,18 @@ export interface LeaderboardUserResponse {
 
 export const UserService = {
   createGuest: async (): Promise<UserProfileResponse> => {
-    const response = await api.post('/users/guest');
-    return response.data;
+    const response = await api.post('/auth/guest');
+    if (response.data?.access_token) {
+      AuthService.saveToken(response.data.access_token);
+    }
+    return response.data.user;
   },
   getUser: async (id: string): Promise<UserProfileResponse> => {
     const response = await api.get(`/users/${id}`);
+    return response.data;
+  },
+  updateUser: async (id: string, data: Partial<UserProfileResponse>): Promise<UserProfileResponse> => {
+    const response = await api.patch(`/users/${id}`, data);
     return response.data;
   },
   getMe: async (): Promise<UserProfileResponse> => {
@@ -125,10 +132,17 @@ export const UserService = {
 };
 
 export const AuthService = {
-  /** Redirect browser to Google OAuth */
-  loginWithGoogle: () => {
+  /** Redirect browser to Google OAuth.
+   *  Pass guestId to trigger the "migrate guest → real user" flow on the API side.
+   */
+  loginWithGoogle: (guestId?: string) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    window.location.href = `${apiUrl}/auth/google`;
+    let url = `${apiUrl}/auth/google`;
+    if (guestId) {
+      const state = Buffer.from(JSON.stringify({ guestId })).toString('base64');
+      url += `?state=${encodeURIComponent(state)}`;
+    }
+    window.location.href = url;
   },
   /** Save token to localStorage */
   saveToken: (token: string) => {

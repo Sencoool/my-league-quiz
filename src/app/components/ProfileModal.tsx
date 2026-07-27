@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
   DailyChallengeService,
   UserProgressService,
@@ -8,6 +9,7 @@ import {
   type UserProfileResponse,
   type DailyChallengeResponse,
   type UserProgressResponse,
+  UserService,
 } from "../utils/api";
 import { useGameStore } from "../store/useGameStore";
 
@@ -56,10 +58,10 @@ function RankIcon({ rank, size = 32 }: { rank: string; size?: number }) {
 
 // ── Mode definitions ──────────────────────────────────────────────────────────
 const MODES = [
-  { key: "CLASSIC", label: "Classic",       icon: "🧩" },
-  { key: "TRAITS",  label: "Traits",        icon: "🔮" },
-  { key: "JIGSAW",  label: "Splash Jigsaw", icon: "🖼️" },
-  { key: "MATCHER", label: "Icon Matcher",  icon: "🃏" },
+  { key: "CLASSIC", label: "Classic",       icon: "🧩", href: "/classic" },
+  { key: "TRAITS",  label: "Traits",        icon: "🔮", href: "/traits" },
+  { key: "JIGSAW",  label: "Splash Jigsaw", icon: "🖼️", href: "/jigsaw" },
+  { key: "MATCHER", label: "Icon Matcher",  icon: "🃏", href: "/matcher" },
 ];
 
 // ── ModeCard ──────────────────────────────────────────────────────────────────
@@ -68,11 +70,13 @@ function ModeCard({
   challenge,
   progress,
   loading,
+  onClick,
 }: {
   mode: typeof MODES[0];
   challenge: DailyChallengeResponse | undefined;
   progress: UserProgressResponse | null | undefined;
   loading: boolean;
+  onClick: () => void;
 }) {
   const isWon = progress?.isWon ?? false;
 
@@ -93,12 +97,17 @@ function ModeCard({
     statusColor = "text-yellow-400";
   }
 
+  const isPlayable = challenge && !isWon && !loading;
+
   return (
     <div
-      className={`flex items-center justify-between px-3 py-2.5 rounded-xl border ${
+      onClick={isPlayable ? onClick : undefined}
+      className={`flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all ${
         isWon
-          ? "bg-emerald-500/5 border-emerald-500/20"
-          : "bg-zinc-800/40 border-zinc-700/40"
+          ? "bg-emerald-500/5 border-emerald-500/20 opacity-80"
+          : isPlayable
+          ? "bg-zinc-800/40 border-zinc-700/40 cursor-pointer hover:bg-zinc-700/50 hover:border-zinc-500/50 shadow-sm hover:shadow-md"
+          : "bg-zinc-900/40 border-zinc-800/40 opacity-50 cursor-not-allowed"
       }`}
     >
       <div className="flex items-center gap-3">
@@ -123,6 +132,93 @@ function ModeCard({
   );
 }
 
+// ── AvatarPickerModal ────────────────────────────────────────────────────────
+import { getImageUrl } from "../utils/image";
+
+function AvatarPickerModal({
+  user,
+  championsList,
+  onClose,
+  onSelect,
+}: {
+  user: UserProfileResponse;
+  championsList: any[];
+  onClose: () => void;
+  onSelect: (iconPath: string) => void;
+}) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const filtered = championsList.filter((c) =>
+    c.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/80 z-[110] flex items-center justify-center p-4"
+      onClick={onClose}
+      style={{ animation: "slideDown 0.2s ease forwards" }}
+    >
+      <div
+        className="w-full max-w-[500px] h-[80vh] max-h-[600px] rounded-[2rem] bg-[#0d1524] border border-zinc-800 shadow-2xl relative flex flex-col transform-gpu overflow-hidden"
+        style={{ animation: "answerDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-5 pb-4 border-b border-white/5 flex items-center justify-between shrink-0">
+          <h2 className="text-xl font-bold text-white tracking-wide">Choose Avatar</h2>
+          <button onClick={onClose} className="p-2 rounded-full bg-zinc-800/50 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors cursor-pointer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+          </button>
+        </div>
+
+        <div className="p-4 shrink-0 border-b border-white/5 bg-[#111827]">
+          <input
+            type="text"
+            placeholder="Search champion..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+          />
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+          <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
+            {filtered.map((champ) => {
+              const isSelected = user.iconPath === champ.iconPath;
+              return (
+                <div
+                  key={champ.id}
+                  onClick={() => onSelect(champ.iconPath)}
+                  className={`relative aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all hover:scale-105 hover:shadow-lg ${
+                    isSelected ? "border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]" : "border-zinc-800 hover:border-zinc-500"
+                  }`}
+                >
+                  <img
+                    src={getImageUrl(champ.iconPath)}
+                    alt={champ.name}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  {isSelected && (
+                    <div className="absolute inset-0 bg-emerald-500/20 flex items-center justify-center">
+                      <div className="bg-emerald-500 text-white rounded-full p-1 shadow-md">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {filtered.length === 0 && (
+              <div className="col-span-full py-10 text-center text-zinc-500">
+                No champions found.
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main ProfileModal ─────────────────────────────────────────────────────────
 interface ProfileModalProps {
   show: boolean;
@@ -131,11 +227,63 @@ interface ProfileModalProps {
 }
 
 export default function ProfileModal({ show, user, onClose }: ProfileModalProps) {
-  const { logout } = useGameStore();
+  const router = useRouter();
+  const { logout, setActiveMode, championsList } = useGameStore();
   const [challenges, setChallenges] = useState<DailyChallengeResponse[]>([]);
   const [progressMap, setProgressMap] = useState<Record<string, UserProgressResponse | null>>({});
   const [loading, setLoading] = useState(false);
   const hasLoaded = useRef(false);
+
+  // Username Editing State
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newName, setNewName] = useState(user.username);
+  const [isSavingName, setIsSavingName] = useState(false);
+  
+  // Avatar Editing State
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const [isSavingAvatar, setIsSavingAvatar] = useState(false);
+
+  // Reset editing state when modal opens/closes
+  useEffect(() => {
+    if (show) {
+      setNewName(user.username);
+      setIsEditingName(false);
+      setShowAvatarPicker(false);
+    }
+  }, [show, user.username]);
+
+  const handleSaveName = async () => {
+    if (!newName.trim() || newName === user.username) {
+      setIsEditingName(false);
+      return;
+    }
+    try {
+      setIsSavingName(true);
+      await UserService.updateUser(user.id, { username: newName.trim() });
+      await useGameStore.getState().refreshUser();
+      setIsEditingName(false);
+    } catch (e) {
+      console.error("Failed to update username", e);
+      // Fallback: reset name
+      setNewName(user.username);
+    } finally {
+      setIsSavingName(false);
+    }
+  };
+
+  const handleSelectAvatar = async (iconPath: string) => {
+    if (iconPath === user.iconPath || isSavingAvatar) return;
+    try {
+      setIsSavingAvatar(true);
+      await UserService.updateUser(user.id, { iconPath });
+      await useGameStore.getState().refreshUser();
+      setShowAvatarPicker(false);
+    } catch (e) {
+      console.error("Failed to update avatar", e);
+    } finally {
+      setIsSavingAvatar(false);
+    }
+  };
 
   useEffect(() => {
     if (!show || hasLoaded.current) return;
@@ -191,6 +339,15 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
 
   return (
     <>
+      {showAvatarPicker && (
+        <AvatarPickerModal
+          user={user}
+          championsList={championsList}
+          onClose={() => setShowAvatarPicker(false)}
+          onSelect={handleSelectAvatar}
+        />
+      )}
+      
       {/* Backdrop & Centered Container */}
       <div 
         className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4" 
@@ -208,22 +365,76 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
         >
           {/* ── User Header ── */}
           <div className="p-4 sm:p-6 pb-2 flex items-start gap-4 relative z-10">
-            <div className="relative shrink-0">
+            <div className="relative shrink-0 group cursor-pointer" onClick={() => setShowAvatarPicker(true)}>
               <img
-                src="/img/default-avatar.png"
+                src={getImageUrl(user.iconPath) || "/img/default-avatar.png"}
                 alt={user.username}
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 shadow-lg bg-[#0d1524]"
+                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 shadow-lg bg-[#0d1524] transition-all group-hover:opacity-80 ${isSavingAvatar ? 'animate-pulse' : ''}`}
                 style={{ borderColor: rankInfo.color }}
+                onError={(e) => (e.currentTarget.src = "/img/default-avatar.png")}
               />
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full bg-black/40">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+              </div>
               <div className="absolute -bottom-2 -right-2 bg-[#0d1524] rounded-full p-1 shadow-md scale-75 sm:scale-100">
                 <RankIcon rank={user.rank || "IRON"} size={26} />
               </div>
             </div>
 
             <div className="flex-1 min-w-0 pt-1">
-              <p className="text-xl sm:text-2xl font-black truncate tracking-wide drop-shadow-sm" style={{ color: rankInfo.color }}>
-                {user.username}
-              </p>
+              {isEditingName ? (
+                <div className="flex items-center gap-2 mb-1">
+                  <input
+                    type="text"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    disabled={isSavingName}
+                    maxLength={30}
+                    className="w-full max-w-[200px] px-2 py-1 bg-zinc-900 border border-zinc-700 rounded-md text-white text-lg font-bold focus:outline-none focus:border-emerald-500 disabled:opacity-50"
+                    autoFocus
+                    onKeyDown={(e) => e.key === "Enter" && handleSaveName()}
+                  />
+                  <button
+                    onClick={handleSaveName}
+                    disabled={isSavingName || !newName.trim()}
+                    className="p-1.5 rounded-md bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setNewName(user.username);
+                      setIsEditingName(false);
+                    }}
+                    disabled={isSavingName}
+                    className="p-1.5 rounded-md bg-zinc-800/80 text-zinc-400 hover:text-white transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <p className="text-xl sm:text-2xl font-black truncate tracking-wide drop-shadow-sm" style={{ color: rankInfo.color }}>
+                    {user.username}
+                  </p>
+                  {!user.isGuest && (
+                    <button
+                      onClick={() => setIsEditingName(true)}
+                      className="p-1.5 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
+                      title="Edit Username"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              )}
               <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-1.5 flex-wrap">
                 <span className="text-xs sm:text-sm font-bold tracking-widest uppercase text-zinc-400">
                   {user.rank || "IRON"}
@@ -244,7 +455,7 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
 
             <button
               onClick={onClose}
-              className="shrink-0 text-zinc-500 hover:text-white transition-colors bg-zinc-800/50 hover:bg-zinc-700/50 p-2 rounded-full"
+              className="shrink-0 text-zinc-500 hover:text-white transition-colors bg-zinc-800/50 hover:bg-zinc-700/50 p-2 rounded-full cursor-pointer"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -304,6 +515,13 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
                     challenge={challenge}
                     progress={prog}
                     loading={loading}
+                    onClick={() => {
+                      if (challenge) {
+                        setActiveMode(mode.key as any);
+                        router.push(mode.href);
+                        onClose();
+                      }
+                    }}
                   />
                 );
               })}
@@ -313,8 +531,8 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
             <div className="mt-4 pt-4 border-t border-zinc-700/60">
               {user.isGuest ? (
                 <button
-                  onClick={() => AuthService.loginWithGoogle()}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-white hover:bg-zinc-100 text-zinc-900 font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]"
+                  onClick={() => AuthService.loginWithGoogle(user.id)}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-white hover:bg-zinc-100 text-zinc-900 font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -327,7 +545,7 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
               ) : (
                 <button
                   onClick={() => { logout(); onClose(); }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-rose-900/40 border border-zinc-700 hover:border-rose-500/40 text-zinc-400 hover:text-rose-400 font-medium text-sm transition-all"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-rose-900/40 border border-zinc-700 hover:border-rose-500/40 text-zinc-400 hover:text-rose-400 font-medium text-sm transition-all cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>

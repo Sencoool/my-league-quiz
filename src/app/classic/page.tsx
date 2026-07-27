@@ -10,7 +10,8 @@ import confetti from "canvas-confetti";
 import VictoryModal from "../components/VictoryModal";
 import TutorialModal from "../components/TutorialModal";
 import CountdownTimer from "../components/CountdownTimer";
-const GuessRow = ({ guess, index, isWon, isNew }: { guess: any, index: number, isWon: boolean, isNew: boolean }) => {
+import { memo } from "react";
+const GuessRow = memo(({ guess, index, isWon, isNew }: { guess: any, index: number, isWon: boolean, isNew: boolean }) => {
   const getColor = (val?: string) => {
     switch (val) {
       case 'MATCH':
@@ -63,7 +64,7 @@ const GuessRow = ({ guess, index, isWon, isNew }: { guess: any, index: number, i
       </div>
     </div>
   );
-};
+});
 
 export default function Home() {
   const {
