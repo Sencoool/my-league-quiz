@@ -9,6 +9,7 @@ import { DailyChallengeService, UserProgressService } from "../utils/api";
 import CountdownTimer from "../components/CountdownTimer";
 import VictoryModal from "../components/VictoryModal";
 import TutorialModal from "../components/TutorialModal";
+import LoadingScene from "../components/LoadingScene";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface CardData {
@@ -29,9 +30,10 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 function calcScore(s: number): number {
-  if (s < 40) return 10;
-  if (s < 60) return 5;
-  return 2;
+  if (s < 30) return 10;
+  if (s < 60) return 7;
+  if (s < 90) return 4;
+  return 1;
 }
 
 function fmtTime(s: number): string {
@@ -115,7 +117,7 @@ const Card = memo(function Card({
         {/* Back */}
         <div
           className="card-back"
-          style={{ backfaceVisibility: "hidden", position: "absolute", inset: 0 }}
+          style={{ backfaceVisibility: "hidden", position: "absolute", inset: 0, cursor: "pointer" }}
         >
           <div className="w-5 h-5 rounded-full bg-blue-500/10" />
         </div>
@@ -199,6 +201,7 @@ export default function MatcherPage() {
             setMoves(prog.moves ?? 0);
             setScore(calcScore(prog.timeElapsed ?? 0));
             setGameOver(true);
+            setMatchedCount(16);
             return;
           }
         } catch { /* 404 = no progress */ }
@@ -345,15 +348,17 @@ export default function MatcherPage() {
   // ── Loading ──
   if (!mounted || !user || championsList.length === 0 || (cards.length === 0 && !alreadyCompleted)) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-white">
-        <h1 className="text-2xl font-bold animate-pulse">Loading Game...</h1>
-      </div>
+      <>
+        <Header />
+        <LoadingScene type="matcher" />
+        <Footer />
+      </>
     );
   }
 
   const totalPairs = 16;
   const progressPct = (matchedCount / totalPairs) * 100;
-  const currentScore = score ?? (elapsed < 40 ? 10 : elapsed < 60 ? 5 : 2);
+  const currentScore = score ?? (elapsed < 30 ? 10 : elapsed < 60 ? 7 : elapsed < 90 ? 4 : 1);
 
   return (
     <>
@@ -364,12 +369,12 @@ export default function MatcherPage() {
         <div className="flex flex-col items-center w-full bg-[#1E293B] border border-white/10 p-6 rounded-3xl shadow-2xl max-w-5xl mb-5 relative">
           
           <div className="w-full relative flex flex-col items-center justify-center mb-1 mt-2">
-            <h1 className="text-3xl md:text-4xl font-semibold text-center tracking-wide px-12">
-              Champion <span className="text-blue-400 font-light">Icon Matcher</span>
+            <h1 className="text-3xl md:text-4xl font-bold text-center tracking-wide text-white drop-shadow-md px-12">
+              Poro Guess <span className="text-blue-400 font-light">Icon Matcher</span>
             </h1>
             <button 
               onClick={() => setShowTutorial(true)}
-              className="absolute right-0 top-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+              className="absolute right-0 top-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors cursor-pointer"
               title="How to play"
             >
               ?
@@ -380,7 +385,11 @@ export default function MatcherPage() {
           <div className="flex items-center justify-center gap-6 md:gap-12 w-full flex-wrap">
             <div className="flex flex-col items-center">
               <span className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Time</span>
-              <GameTimer running={gameStarted && !gameOver} onTick={handleTick} />
+              {alreadyCompleted ? (
+                <span className="text-2xl font-mono font-bold text-emerald-400">{fmtTime(elapsed)}</span>
+              ) : (
+                <GameTimer running={gameStarted && !gameOver} onTick={handleTick} />
+              )}
             </div>
             <div className="flex flex-col items-center">
               <span className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Pairs</span>
@@ -402,9 +411,10 @@ export default function MatcherPage() {
             <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full transition-all duration-500" style={{ width: `${progressPct}%` }} />
           </div>
           <div className="flex gap-4 mt-3 text-xs text-zinc-500">
-            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />&lt;40s = 10 pts</span>
-            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />&lt;60s = 5 pts</span>
-            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-500 inline-block" />60s+ = 2 pts</span>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />&lt;30s = 10 pts</span>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />&lt;60s = 7 pts</span>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-400 inline-block" />&lt;90s = 4 pts</span>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-600 inline-block" />90s+ = 1 pt</span>
           </div>
         </div>
 
@@ -430,7 +440,7 @@ export default function MatcherPage() {
             <CountdownTimer className="text-zinc-500 text-sm mt-2" />
             <button
               onClick={() => setShowModal(true)}
-              className="mt-6 px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all tracking-wide"
+              className="mt-6 px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all tracking-wide cursor-pointer"
             >
               View Results
             </button>
@@ -444,7 +454,7 @@ export default function MatcherPage() {
                 </p>
                 <button
                   onClick={() => setShowModal(true)}
-                  className="px-6 py-2 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-xl border border-white/10 shadow-lg hover:shadow-xl hover:border-white/20 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2"
+                  className="px-6 py-2 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-xl border border-white/10 shadow-lg hover:shadow-xl hover:border-white/20 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                   View Share Results

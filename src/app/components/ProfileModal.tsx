@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useDeferredValue } from "react";
 import { useRouter } from "next/navigation";
 import {
   DailyChallengeService,
@@ -89,7 +89,7 @@ function ModeCard({
     statusLabel = "No challenge";
     statusColor = "text-zinc-600";
   } else if (isWon) {
-    statusLabel = "Completed ✓";
+    statusLabel = "Completed";
     statusColor = "text-emerald-400";
   } else if (progress) {
     const guesses = progress.guesses?.length ?? 0;
@@ -104,16 +104,16 @@ function ModeCard({
       onClick={isPlayable ? onClick : undefined}
       className={`flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all ${
         isWon
-          ? "bg-emerald-500/5 border-emerald-500/20 opacity-80"
+          ? "bg-[#0d252d] border-[#0e5649] shadow-[0_0_15px_rgba(16,185,129,0.15)]"
           : isPlayable
-          ? "bg-zinc-800/40 border-zinc-700/40 cursor-pointer hover:bg-zinc-700/50 hover:border-zinc-500/50 shadow-sm hover:shadow-md"
-          : "bg-zinc-900/40 border-zinc-800/40 opacity-50 cursor-not-allowed"
+          ? "bg-[#171c26] border-[#2a3143] cursor-pointer hover:bg-[#1a202c] hover:border-[#384158] shadow-sm hover:shadow-md"
+          : "bg-[#0f1522] border-[#1c2233] cursor-not-allowed text-zinc-600"
       }`}
     >
       <div className="flex items-center gap-3">
-        <span className="text-lg leading-none">{mode.icon}</span>
+        <span className={`text-lg leading-none ${!isPlayable && !isWon ? 'opacity-50' : ''}`}>{mode.icon}</span>
         <div>
-          <p className="text-sm font-semibold text-white leading-none">{mode.label}</p>
+          <p className={`text-sm font-semibold leading-none ${!isPlayable && !isWon ? 'text-zinc-500' : 'text-white'}`}>{mode.label}</p>
           <p className={`text-xs mt-0.5 ${statusColor}`}>{statusLabel}</p>
         </div>
       </div>
@@ -147,73 +147,165 @@ function AvatarPickerModal({
   onSelect: (iconPath: string) => void;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const filtered = championsList.filter((c) =>
-    c.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const deferredSearchTerm = useDeferredValue(searchTerm);
+  const [selectedIcon, setSelectedIcon] = useState<string>(user.iconPath || "");
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    // Wait for the modal's entry animation (300ms) to finish before rendering the heavy grid
+    const timer = setTimeout(() => setIsReady(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const allAvatars = [
+    { id: "poro-default", name: "Poro", iconPath: "" },
+    ...championsList,
+  ];
+
+  const filtered = allAvatars.filter((c) =>
+    c.name.toLowerCase().includes(deferredSearchTerm.toLowerCase())
   );
 
   return (
     <div
-      className="fixed inset-0 bg-black/80 z-[110] flex items-center justify-center p-4"
-      onClick={onClose}
+      className="flex flex-col w-full h-[600px] max-h-[80vh] bg-[#0d1524]"
       style={{ animation: "slideDown 0.2s ease forwards" }}
     >
-      <div
-        className="w-full max-w-[500px] h-[80vh] max-h-[600px] rounded-[2rem] bg-[#0d1524] border border-zinc-800 shadow-2xl relative flex flex-col transform-gpu overflow-hidden"
-        style={{ animation: "answerDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards" }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="p-5 pb-4 border-b border-white/5 flex items-center justify-between shrink-0">
+      <div className="p-5 pb-4 border-b border-white/10 flex items-center justify-between shrink-0">
           <h2 className="text-xl font-bold text-white tracking-wide">Choose Avatar</h2>
           <button onClick={onClose} className="p-2 rounded-full bg-zinc-800/50 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors cursor-pointer">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>
         </div>
 
-        <div className="p-4 shrink-0 border-b border-white/5 bg-[#111827]">
-          <input
-            type="text"
-            placeholder="Search champion..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 bg-zinc-900 border border-zinc-700/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
-          />
+        <div className="p-4 shrink-0 border-b border-white/10 bg-[#111827] flex justify-center">
+          <div className="relative w-full max-w-sm">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-500">
+                <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Search avatar..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-11 pr-4 py-2.5 bg-zinc-900 border border-zinc-700/50 rounded-full text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all shadow-inner"
+            />
+          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
-            {filtered.map((champ) => {
-              const isSelected = user.iconPath === champ.iconPath;
+        <div className="flex-1 overflow-y-auto custom-scrollbar bg-[#0a0f18]">
+          <div className="p-4 grid grid-cols-4 sm:grid-cols-5 gap-3">
+            {!isReady ? (
+              <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4">
+                <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+                <span className="text-zinc-500 font-medium text-sm animate-pulse">Loading avatars...</span>
+              </div>
+            ) : (
+              filtered.map((champ) => {
+                const isSelected = selectedIcon === champ.iconPath;
               return (
-                <div
-                  key={champ.id}
-                  onClick={() => onSelect(champ.iconPath)}
-                  className={`relative aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all hover:scale-105 hover:shadow-lg ${
-                    isSelected ? "border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]" : "border-zinc-800 hover:border-zinc-500"
-                  }`}
-                >
-                  <img
-                    src={getImageUrl(champ.iconPath)}
-                    alt={champ.name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
+                <div key={champ.id} className="relative group">
+                  <div
+                    onClick={() => setSelectedIcon(champ.iconPath)}
+                    className={`relative aspect-square rounded-full overflow-hidden border-2 cursor-pointer transition-all duration-200 hover:scale-110 hover:shadow-xl ${
+                      isSelected 
+                        ? "border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.5)] scale-105" 
+                        : "border-zinc-800 hover:border-zinc-400 opacity-80 hover:opacity-100"
+                    }`}
+                  >
+                    <img
+                      src={champ.iconPath ? getImageUrl(champ.iconPath) : "/img/default-avatar.png"}
+                      alt={champ.name}
+                      className="w-full h-full object-cover scale-[1.15] transition-transform duration-300 group-hover:scale-[1.25]"
+                      loading="lazy"
+                      onError={(e) => (e.currentTarget.src = "/img/default-avatar.png")}
+                    />
+                  </div>
                   {isSelected && (
-                    <div className="absolute inset-0 bg-emerald-500/20 flex items-center justify-center">
-                      <div className="bg-emerald-500 text-white rounded-full p-1 shadow-md">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    <div className="absolute -bottom-1 -right-1 bg-[#0a0f18] rounded-full p-[3px] shadow-lg pointer-events-none">
+                      <div className="bg-emerald-500 text-white rounded-full p-1 shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                       </div>
                     </div>
                   )}
                 </div>
               );
-            })}
-            {filtered.length === 0 && (
-              <div className="col-span-full py-10 text-center text-zinc-500">
-                No champions found.
+            })
+          )}
+            {isReady && filtered.length === 0 && (
+              <div className="col-span-full py-16 flex flex-col items-center justify-center gap-3">
+                <div className="text-4xl opacity-50 grayscale">🔍</div>
+                <span className="text-zinc-500 font-medium tracking-wide">No avatars match your search</span>
               </div>
             )}
           </div>
         </div>
+
+        <div className="p-4 border-t border-white/10 bg-[#111827] flex justify-end gap-3 shrink-0">
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-xl text-zinc-300 font-medium hover:bg-zinc-800 hover:text-white transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onSelect(selectedIcon)}
+            disabled={selectedIcon === (user.iconPath || "")}
+            className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20 cursor-pointer"
+          >
+            Save
+          </button>
+      </div>
+    </div>
+  );
+}
+
+function RankTierList({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className="flex flex-col w-full h-full"
+      style={{ animation: "slideDown 0.2s ease forwards" }}
+    >
+      <div className="p-5 pb-4 border-b border-zinc-700/60 flex items-center justify-between shrink-0">
+        <h2 className="text-xl font-bold text-white tracking-wide">Rank Tiers</h2>
+        <button
+          onClick={onClose}
+          className="p-2 rounded-full bg-zinc-800/50 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        </button>
+      </div>
+      <div className="p-4 bg-[#0a0f18] flex flex-col gap-2 rounded-b-[2rem]">
+        {RANK_THRESHOLDS.map((tier) => (
+          <div
+            key={tier.rank}
+            className="group flex items-center justify-between p-3 rounded-xl border transition-all duration-200 cursor-default border-white/5 bg-white/[0.03] hover:bg-[var(--rank-bg)] hover:border-[var(--rank-border)]"
+            style={{
+              "--rank-color": tier.color,
+              "--rank-bg": `${tier.color}20`,
+              "--rank-border": `${tier.color}60`,
+              "--rank-badge-bg-hover": `${tier.color}15`,
+            } as React.CSSProperties}
+          >
+            <div className="flex items-center gap-3">
+              <RankIcon rank={tier.rank} size={36} />
+              <span 
+                className="font-bold tracking-widest uppercase text-sm sm:text-base transition-colors duration-200"
+                style={{ color: tier.color, textShadow: `0 0 8px ${tier.color}40` }}
+              >
+                {tier.rank}
+              </span>
+            </div>
+            <span 
+              className="text-sm font-bold px-3 py-1 rounded-lg transition-all duration-200 bg-black/30 group-hover:bg-[var(--rank-badge-bg-hover)]"
+              style={{ color: tier.color }}
+            >
+              {tier.minScore === 0 ? "0" : tier.minScore.toLocaleString()} PTS
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -244,12 +336,16 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [isSavingAvatar, setIsSavingAvatar] = useState(false);
 
+  // Rank Info State
+  const [showRankInfo, setShowRankInfo] = useState(false);
+
   // Reset editing state when modal opens/closes
   useEffect(() => {
     if (show) {
       setNewName(user.username);
       setIsEditingName(false);
       setShowAvatarPicker(false);
+      setShowRankInfo(false);
       setNameError("");
     }
   }, [show, user.username]);
@@ -349,14 +445,9 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
 
   return (
     <>
-      {showAvatarPicker && (
-        <AvatarPickerModal
-          user={user}
-          championsList={championsList}
-          onClose={() => setShowAvatarPicker(false)}
-          onSelect={handleSelectAvatar}
-        />
-      )}
+
+
+
       
       {/* Backdrop & Centered Container */}
       <div 
@@ -364,29 +455,51 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
         onClick={onClose}
         style={{ animation: "slideDown 0.2s ease forwards" }}
       >
-        {/* Modal Panel */}
+        {/* Modal Panel Animation Wrapper */}
         <div
-          className="w-full max-w-[520px] rounded-[2rem] bg-[#0d1524] border border-zinc-800 shadow-2xl relative flex flex-col transform-gpu"
+          className="w-full max-w-[520px] max-h-[90vh] shadow-2xl relative flex flex-col rounded-[2rem]"
           style={{ 
-            animation: "answerDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards",
-            willChange: "transform, opacity"
+            animation: "answerDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards"
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* ── User Header ── */}
-          <div className="p-4 sm:p-6 pb-2 flex items-start gap-4 relative z-10">
+          {/* Scrollable Content Container */}
+          <div 
+            className="w-full h-full overflow-y-auto custom-scrollbar bg-[#0d1524] border border-zinc-800 rounded-[2rem] flex flex-col overflow-hidden"
+            style={{ clipPath: "inset(0 0 0 0 round 2rem)" }}
+          >
+          {showAvatarPicker ? (
+            <AvatarPickerModal
+              user={user}
+              championsList={championsList}
+              onClose={() => setShowAvatarPicker(false)}
+              onSelect={(iconPath) => {
+                handleSelectAvatar(iconPath);
+                setShowAvatarPicker(false);
+              }}
+            />
+          ) : showRankInfo ? (
+            <RankTierList onClose={() => setShowRankInfo(false)} />
+          ) : (
+            <>
+              {/* ── User Header ── */}
+              <div className="p-4 sm:p-6 pb-2 flex items-start gap-4 relative z-10">
             <div className="relative shrink-0 group cursor-pointer" onClick={() => setShowAvatarPicker(true)}>
-              <img
-                src={getImageUrl(user.iconPath) || "/img/default-avatar.png"}
-                alt={user.username}
-                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 shadow-lg bg-[#0d1524] transition-all group-hover:opacity-80 ${isSavingAvatar ? 'animate-pulse' : ''}`}
+              <div 
+                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-4 shadow-lg bg-[#0d1524] transition-all group-hover:opacity-80 ${isSavingAvatar ? 'animate-pulse' : ''}`}
                 style={{ borderColor: rankInfo.color }}
-                onError={(e) => (e.currentTarget.src = "/img/default-avatar.png")}
-              />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full bg-black/40">
+              >
+                <img
+                  src={getImageUrl(user.iconPath) || "/img/default-avatar.png"}
+                  alt={user.username}
+                  className="w-full h-full object-cover scale-[1.15]"
+                  onError={(e) => (e.currentTarget.src = "/img/default-avatar.png")}
+                />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full bg-black/40 pointer-events-none">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
               </div>
-              <div className="absolute -bottom-2 -right-2 bg-[#0d1524] rounded-full p-1 shadow-md scale-75 sm:scale-100">
+              <div className="absolute -bottom-2 -right-2 bg-[#0d1524] rounded-full p-1 shadow-md scale-75 sm:scale-100 pointer-events-none">
                 <RankIcon rank={user.rank || "IRON"} size={26} />
               </div>
             </div>
@@ -437,7 +550,7 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <p className="text-xl sm:text-2xl font-black truncate tracking-wide drop-shadow-sm" style={{ color: rankInfo.color }}>
+                  <p className="text-xl sm:text-2xl font-black truncate tracking-wide text-white drop-shadow-md">
                     {user.username}
                   </p>
                   {!user.isGuest && (
@@ -455,21 +568,33 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
                 </div>
               )}
               <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-1.5 flex-wrap">
-                <span className="text-xs sm:text-sm font-bold tracking-widest uppercase text-zinc-400">
-                  {user.rank || "IRON"}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span 
+                    className="text-xs sm:text-sm font-bold tracking-widest uppercase"
+                    style={{ color: rankInfo.color, textShadow: `0 0 8px ${rankInfo.color}40` }}
+                  >
+                    {user.rank || "IRON"}
+                  </span>
+                  <button
+                    onClick={() => setShowRankInfo(true)}
+                    className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-zinc-800 flex items-center justify-center text-[10px] sm:text-xs font-bold text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors cursor-pointer border border-zinc-700"
+                    title="Rank Information"
+                  >
+                    ?
+                  </button>
+                </div>
                 <span className="text-xs sm:text-sm text-yellow-400 font-bold px-2 py-0.5 bg-yellow-400/10 rounded-md border border-yellow-400/20">
                   {currentScore} PTS
                 </span>
+                {user.streak > 0 && (
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 bg-orange-500/10 border border-orange-500/20 rounded-full">
+                    <span className="text-xs">🔥</span>
+                    <span className="text-[10px] sm:text-xs text-orange-400 font-bold uppercase tracking-wider">
+                      {user.streak} Day Streak
+                    </span>
+                  </div>
+                )}
               </div>
-              {user.streak > 0 && (
-                <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 bg-orange-500/10 border border-orange-500/20 rounded-full">
-                  <span className="text-xs">🔥</span>
-                  <span className="text-[10px] sm:text-xs text-orange-400 font-bold uppercase tracking-wider">
-                    {user.streak} Day Streak
-                  </span>
-                </div>
-              )}
             </div>
 
             <button
@@ -484,13 +609,13 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
 
           {/* ── Rank Progress Bar ── */}
           <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-2 relative z-10">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest" style={{ color: rankInfo.color }}>
                 {user.rank || "IRON"}
               </span>
               {nextRank ? (
                 <span className="text-[10px] sm:text-xs text-zinc-400 font-medium tracking-wide">
-                  <span className="text-zinc-200 font-bold">{ptsToNext} PTS</span> to {nextRank.rank}
+                  <span className="text-zinc-200 font-bold">{ptsToNext} PTS</span> to <span style={{ color: nextRank.color, fontWeight: 'bold' }}>{nextRank.rank}</span>
                 </span>
               ) : (
                 <span className="text-[10px] sm:text-xs text-yellow-400 font-bold tracking-widest">MAX RANK ✓</span>
@@ -501,8 +626,8 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
                 className="h-full rounded-full transition-all duration-1000 ease-out"
                 style={{ 
                   width: `${barWidth}%`, 
-                  backgroundColor: rankInfo.color,
-                  boxShadow: `0 0 10px ${rankInfo.color}80`
+                  backgroundColor: "#10b981",
+                  boxShadow: `0 0 10px #10b98180`
                 }}
               />
             </div>
@@ -512,7 +637,7 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
           <div className="border-t border-zinc-700/60 shadow-[0_-1px_2px_rgba(0,0,0,0.5)] z-10" />
 
           {/* ── Today's Games ── */}
-          <div className="p-4 sm:p-6 bg-[#0f172a]/50 relative z-10 flex-1">
+          <div className="p-4 sm:p-6 flex-1">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold text-zinc-300 uppercase tracking-widest flex items-center gap-2">
                 <span>🎮</span> Today&apos;s Games
@@ -551,7 +676,7 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
               {user.isGuest ? (
                 <button
                   onClick={() => AuthService.loginWithGoogle(user.id)}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-white hover:bg-zinc-100 text-zinc-900 font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg bg-white hover:bg-zinc-100 text-zinc-900 font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -564,7 +689,7 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
               ) : (
                 <button
                   onClick={() => { logout(); onClose(); }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-rose-900/40 border border-zinc-700 hover:border-rose-500/40 text-zinc-400 hover:text-rose-400 font-medium text-sm transition-all cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-zinc-800 hover:bg-rose-900/40 border border-zinc-700 hover:border-rose-500/40 text-zinc-400 hover:text-rose-400 font-medium text-sm transition-all cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -576,17 +701,12 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
               )}
             </div>
           </div>
+          </>
+        )}
+          </div>
         </div>
       </div>
 
-      {showAvatarPicker && (
-        <AvatarPickerModal
-          user={user}
-          championsList={championsList}
-          onClose={() => setShowAvatarPicker(false)}
-          onSelect={handleSelectAvatar}
-        />
-      )}
     </>
   );
 }

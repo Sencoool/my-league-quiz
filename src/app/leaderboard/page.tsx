@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Header from "../components/header";
 import Footer from "../components/footer";
+import LoadingScene from "../components/LoadingScene";
 import { useGameStore } from "../store/useGameStore";
 import { UserService, LeaderboardUserResponse } from "../utils/api";
 import { getImageUrl } from "../utils/image";
@@ -89,9 +90,7 @@ export default function Leaderboard() {
           {/* List */}
           <div className="w-full h-[600px] overflow-y-auto overflow-x-hidden custom-scrollbar">
             {loading ? (
-              <div className="flex items-center justify-center h-full">
-                <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-              </div>
+              <LoadingScene type="leaderboard" />
             ) : leaderboard.length === 0 ? (
               <div className="flex items-center justify-center h-full text-zinc-500">
                 No players found.
@@ -99,6 +98,8 @@ export default function Leaderboard() {
             ) : (
               leaderboard.map((player, index) => {
                 const isCurrentUser = user?.id === player.id;
+                const displayIcon = isCurrentUser && user?.iconPath ? user.iconPath : player.iconPath;
+                const displayName = isCurrentUser && user?.username ? user.username : player.username;
                 const position = index + 1;
                 
                 let positionColor = "text-zinc-400";
@@ -130,20 +131,22 @@ export default function Leaderboard() {
                     </div>
                     
                     <div className="flex-1 flex items-center gap-3 sm:gap-4 ml-2 sm:ml-0 min-w-0">
-                      <div className="relative shrink-0">
-                        <img 
-                          src={getImageUrl(player.iconPath)} 
-                          alt={player.username} 
-                          className="w-12 h-12 rounded-xl object-cover border border-white/10"
-                          onError={(e) => (e.currentTarget.src = "/img/default-avatar.png")}
-                        />
+                      <div className="relative shrink-0 group">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 flex items-center justify-center bg-[#0f172a]">
+                          <img 
+                            src={getImageUrl(displayIcon)} 
+                            alt={displayName} 
+                            className="w-full h-full object-cover scale-[1.15]"
+                            onError={(e) => (e.currentTarget.src = "/img/default-avatar.png")}
+                          />
+                        </div>
                         <div className="absolute -bottom-2 -right-2 bg-[#0f172a] rounded-full p-0.5">
                           <RankIcon rank={player.rank} size={20} />
                         </div>
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className={`text-base sm:text-lg tracking-wide truncate ${nameColor}`}>
-                          {player.username}
+                          {displayName}
                         </span>
                         <span className="text-xs text-zinc-500 font-medium">
                           {player.rank}

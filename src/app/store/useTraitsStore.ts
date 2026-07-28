@@ -30,7 +30,7 @@ export const useTraitsStore = create<TraitsState>()(
               [challengeId]: {
                 revealedTraits: [],
                 availableUnlocks: 1, // Start with 1 free unlock
-                score: 12, // Start with 12 score
+                score: 10, // Start with 10 score
                 isGivenUp: false,
               },
             },
@@ -58,7 +58,9 @@ export const useTraitsStore = create<TraitsState>()(
         const state = get().games[challengeId];
         if (!state) return;
         
-        const newScore = Math.max(0, state.score - 3);
+        const revealedCount = state.revealedTraits.length + 1; // including the new one
+        const scoreMap = [10, 10, 8, 6, 4, 1]; // Index is number of traits revealed
+        const newScore = scoreMap[Math.min(5, revealedCount)] || 1;
         
         if (state.revealedTraits.length + state.availableUnlocks < 5) {
           set({

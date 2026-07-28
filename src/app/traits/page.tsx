@@ -10,6 +10,7 @@ import confetti from 'canvas-confetti';
 import VictoryModal from "../components/VictoryModal";
 import TutorialModal from "../components/TutorialModal";
 import CountdownTimer from "../components/CountdownTimer";
+import LoadingScene from "../components/LoadingScene";
 import Footer from "../components/footer";
 
 export default function TraitsPage() {
@@ -152,9 +153,11 @@ export default function TraitsPage() {
   // Loading state
   if (!mounted || !user || !activeChallenge || !traitsChallenge || championsList.length === 0 || !gameState) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-white">
-        <h1 className="text-2xl font-bold animate-pulse">Loading Game...</h1>
-      </div>
+      <>
+        <Header />
+        <LoadingScene type="traits" />
+        <Footer />
+      </>
     );
   }
 
@@ -171,12 +174,12 @@ export default function TraitsPage() {
         <div className="flex flex-col items-center w-full bg-[#1c2331] border border-white/5 p-6 md:p-10 rounded-3xl shadow-2xl max-w-[95%] md:w-[600px] relative">
           
           <div className="w-full relative flex items-center justify-center mb-6 mt-2">
-            <h1 className="text-2xl sm:text-3xl font-medium text-center text-zinc-200 tracking-wide px-12">
-              Traits game
+            <h1 className="text-3xl md:text-4xl font-bold text-center tracking-wide text-white drop-shadow-md px-12">
+              Poro Guess <span className="text-blue-400 font-light">Traits</span>
             </h1>
             <button 
               onClick={() => setShowTutorial(true)}
-              className="absolute right-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+              className="absolute right-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors cursor-pointer"
               title="How to play"
             >
               ?
@@ -279,7 +282,7 @@ export default function TraitsPage() {
                 <button 
                   onClick={() => search.length > 0 && submitGuess(selectedIndex >= 0 ? search[selectedIndex] : search[0])}
                   disabled={isSubmittingGuess || search.length === 0}
-                  className="w-12 h-12 flex items-center justify-center bg-[#111620] border border-yellow-600/50 rounded-full hover:bg-yellow-600/20 transition-colors disabled:opacity-50"
+                  className="w-12 h-12 flex items-center justify-center bg-[#111620] border border-yellow-600/50 rounded-full hover:bg-yellow-600/20 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </button>
@@ -312,7 +315,7 @@ export default function TraitsPage() {
           {!progress?.isWon && !gameState.isGivenUp && gameState.score === 0 && (
             <button 
               onClick={() => giveUp(traitsChallenge.id)}
-              className="mt-4 px-6 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-colors text-sm"
+              className="mt-4 px-6 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-colors text-sm cursor-pointer"
             >
               Give Up (Show Answer)
             </button>
@@ -386,9 +389,9 @@ export default function TraitsPage() {
               <div className="bg-black/30 p-4 rounded-xl border border-white/5 mt-4">
                 <h3 className="font-bold text-white mb-2">Scoring</h3>
                 <ul className="space-y-2 text-sm">
-                  <li>Start with <strong className="text-yellow-400">100 points</strong>.</li>
-                  <li>Each wrong guess or trait revealed deducts <strong className="text-rose-400">10 points</strong>.</li>
-                  <li>Minimum score you can get is <strong className="text-yellow-400">10 points</strong>.</li>
+                  <li>Start with <strong className="text-yellow-400">10 points</strong>.</li>
+                  <li>Score decreases to 8, 6, 4 for the 2nd, 3rd, and 4th trait revealed.</li>
+                  <li>If all 5 traits are revealed, your score becomes <strong className="text-yellow-400">1 point</strong>.</li>
                 </ul>
               </div>
               <p className="text-sm text-zinc-400 mt-2">Try to guess correctly using as few hints as possible to maximize your score!</p>

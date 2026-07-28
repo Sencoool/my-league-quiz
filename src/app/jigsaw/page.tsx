@@ -11,6 +11,7 @@ import confetti from "canvas-confetti";
 import VictoryModal from "../components/VictoryModal";
 import TutorialModal from "../components/TutorialModal";
 import CountdownTimer from "../components/CountdownTimer";
+import LoadingScene from "../components/LoadingScene";
 
 export default function Jigsaw() {
   const {
@@ -131,9 +132,11 @@ export default function Jigsaw() {
 
   if (!mounted || !user || !activeChallenge || !jigsawChallenge || championsList.length === 0 || !gameState) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-white">
-        <h1 className="text-2xl font-bold animate-pulse">Loading Game...</h1>
-      </div>
+      <>
+        <Header />
+        <LoadingScene type="jigsaw" />
+        <Footer />
+      </>
     );
   }
 
@@ -152,12 +155,12 @@ export default function Jigsaw() {
         <div className="flex flex-col items-center w-full bg-[#1E293B]/95 border border-white/10 p-4 sm:p-8 rounded-3xl shadow-2xl max-w-[95%] md:w-[600px] lg:w-[800px] relative">
           
           <div className="w-full relative flex items-center justify-center mb-6 mt-2">
-            <h1 className="text-3xl md:text-4xl font-semibold text-center tracking-wide px-12">
-              Poro Guess <span className="text-blue-400 font-light">Jigsaw</span>
+            <h1 className="text-3xl md:text-4xl font-bold text-center tracking-wide text-white drop-shadow-md px-12">
+              Poro Guess <span className="text-blue-400 font-light">Splash Jigsaw</span>
             </h1>
             <button 
               onClick={() => setShowTutorial(true)}
-              className="absolute right-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+              className="absolute right-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors cursor-pointer"
               title="How to play"
             >
               ?
@@ -275,7 +278,7 @@ export default function Jigsaw() {
           {gameState.score === 0 && !progress?.isWon && !gameState.isGivenUp && (
             <button
               onClick={() => giveUp(jigsawChallenge.id)}
-              className="mt-4 px-6 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-colors text-sm"
+              className="mt-4 px-6 py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-colors text-sm cursor-pointer"
             >
               Give Up (Show Answer)
             </button>
@@ -347,9 +350,9 @@ export default function Jigsaw() {
               <div className="bg-black/30 p-4 rounded-xl border border-white/5 mt-4">
                 <h3 className="font-bold text-white mb-2">Scoring</h3>
                 <ul className="space-y-2 text-sm">
-                  <li>Start with <strong className="text-yellow-400">100 points</strong>.</li>
-                  <li>Each wrong guess or tile revealed deducts <strong className="text-rose-400">10 points</strong>.</li>
-                  <li>Minimum score you can get is <strong className="text-yellow-400">10 points</strong>.</li>
+                  <li>Start with <strong className="text-yellow-400">10 points</strong>.</li>
+                  <li>Each additional tile revealed deducts <strong className="text-rose-400">2 points</strong>.</li>
+                  <li>Minimum score you can get is <strong className="text-yellow-400">1 point</strong>.</li>
                 </ul>
               </div>
               <p className="text-sm text-zinc-400 mt-2">Try to guess correctly using as few pieces as possible to maximize your score!</p>

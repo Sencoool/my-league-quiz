@@ -10,6 +10,7 @@ import confetti from "canvas-confetti";
 import VictoryModal from "../components/VictoryModal";
 import TutorialModal from "../components/TutorialModal";
 import CountdownTimer from "../components/CountdownTimer";
+import LoadingScene from "../components/LoadingScene";
 import { memo } from "react";
 const GuessRow = memo(({ guess, index, isWon, isNew }: { guess: any, index: number, isWon: boolean, isNew: boolean }) => {
   const getColor = (val?: string) => {
@@ -195,9 +196,11 @@ export default function Home() {
   // Loading state
   if (!mounted || !user || !activeChallenge || championsList.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-white">
-        <h1 className="text-2xl font-bold animate-pulse">Loading Game...</h1>
-      </div>
+      <>
+        <Header />
+        <LoadingScene type="classic" />
+        <Footer />
+      </>
     );
   }
 
@@ -211,22 +214,22 @@ export default function Home() {
       <main className="flex flex-col items-center flex-grow py-2 container mx-auto xl:pt-[100px] pt-[50px] select-none text-white">
         
         {/* search box container */}
-        <div className="flex flex-col items-center container mx-auto bg-[#1E293B]/95 border border-white/10 p-8 rounded-3xl shadow-2xl max-w-1/4 min-h-[300px] min-w-3/4 md:min-w-[500px] relative">
+        <div className="flex flex-col items-center container mx-auto bg-[#1E293B]/95 border border-white/10 p-8 rounded-3xl shadow-2xl max-w-1/4 min-h-[300px] min-w-3/4 md:min-w-[500px] relative z-50">
           
           <div className="w-full relative flex items-center justify-center mb-6 mt-2">
-            <h1 className="text-3xl md:text-4xl font-semibold text-center tracking-wide px-12">
+            <h1 className="text-3xl md:text-4xl font-bold text-center tracking-wide text-white drop-shadow-md px-12">
               Poro Guess <span className="text-blue-400 font-light">Classic</span>
             </h1>
             <button 
               onClick={() => setShowTutorial(true)}
-              className="absolute right-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
+              className="absolute right-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors cursor-pointer"
               title="How to play"
             >
               ?
             </button>
           </div>
 
-          <div className="w-[85%] md:w-3/4 flex flex-col items-center justify-center relative z-20">
+          <div className="w-[85%] md:w-full flex flex-col items-center justify-center relative z-[100]">
             {progress?.isWon && targetChamp ? (
               <div className="w-full flex flex-col gap-2">
                 <CountdownTimer className="text-zinc-400 text-sm mb-1" />
@@ -264,7 +267,7 @@ export default function Home() {
             {/* select dropdown */}
             <div
               ref={domSearch}
-              className={`w-full md:w-3/4 max-h-[300px] overflow-y-auto flex flex-col border border-white/10 bg-zinc-900 rounded-xl absolute top-[60px] shadow-2xl z-50 ${inputRef.current?.value == "" || progress?.isWon ? "hidden" : "block"}`}
+              className={`w-full max-h-[450px] overflow-y-auto flex flex-col border border-white/10 bg-zinc-900 rounded-xl absolute top-[60px] shadow-2xl z-50 ${inputRef.current?.value == "" || progress?.isWon ? "hidden" : "block"}`}
             >
               {search.length === 0 && inputRef.current?.value !== "" ? (
                 <div className="flex items-center justify-center p-4 text-zinc-500 italic">
@@ -348,10 +351,10 @@ export default function Home() {
         </div>
 
         {/* Table Container */}
-        <div className="mt-4 px-5 w-full overflow-x-auto scrollbar-hidden">
+        <div className="mt-4 px-5 w-full overflow-x-auto scrollbar-hidden relative z-10">
           <div className="w-max mx-auto flex flex-col items-center">
             {/* Table Header */}
-          <div className="w-[1256px] grid grid-cols-8 gap-2 bg-zinc-800/95 text-zinc-400 font-bold uppercase tracking-wider rounded-xl mb-4 shadow-lg border border-white/5 relative z-40">
+          <div className="w-[1256px] grid grid-cols-8 gap-2 bg-zinc-800/95 text-zinc-400 font-bold uppercase tracking-wider rounded-xl mb-4 shadow-lg border border-white/5 relative z-10">
             <div className="flex justify-center items-center py-4 w-[150px]">Icon</div>
             <div className="flex justify-center items-center py-4 w-[150px]">Name</div>
             <div className="flex justify-center items-center py-4 w-[150px]">Gender</div>
@@ -428,6 +431,19 @@ export default function Home() {
                   <span className="text-sm"><strong className="text-white">Arrows:</strong> Indicates if the correct year is higher or lower.</span>
                 </div>
               </div>
+
+              <div className="bg-black/30 p-4 rounded-xl border border-white/5 mt-4">
+                <h3 className="font-bold text-white mb-2">Scoring</h3>
+                <ul className="space-y-2 text-sm">
+                  <li>Guess correctly on your 1st try: <strong className="text-yellow-400">10 points</strong></li>
+                  <li>2nd try: <strong className="text-yellow-400">8 points</strong></li>
+                  <li>3rd try: <strong className="text-yellow-400">6 points</strong></li>
+                  <li>4th try: <strong className="text-yellow-400">4 points</strong></li>
+                  <li>5th try: <strong className="text-yellow-400">2 points</strong></li>
+                  <li>6th try or more: <strong className="text-yellow-400">1 point</strong></li>
+                </ul>
+              </div>
+
               <p className="text-sm text-zinc-400 mt-2">Try to guess the champion in as few tries as possible!</p>
             </div>
           }

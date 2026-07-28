@@ -43,7 +43,7 @@ export const useJigsawStore = create<JigsawState>()(
         if (state.availableUnlocks <= 0) return;
 
         // If it's the very first tile, score stays 10. Otherwise, reduce by 2.
-        const newScore = state.revealedTiles.length === 0 ? 10 : Math.max(0, state.score - 2);
+        const newScore = state.revealedTiles.length === 0 ? 10 : Math.max(1, state.score - 2);
         
         set({
           games: {

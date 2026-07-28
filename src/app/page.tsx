@@ -87,7 +87,7 @@ export default function HomePage() {
                   key={mode.id}
                   href={mode.disabled ? "#" : mode.href}
                   className={`
-                    relative group rounded-3xl p-6 sm:p-8 transition duration-300 ease-out border transform-gpu
+                    relative group rounded-3xl p-6 sm:p-8 transition duration-300 ease-out border
                     flex flex-col items-start gap-4 h-full
                     ${mode.disabled 
                       ? "bg-zinc-900/50 border-zinc-800 opacity-50 cursor-not-allowed" 
@@ -106,7 +106,7 @@ export default function HomePage() {
                   )}
 
                   {/* Icon Frame */}
-                  <div className={`w-14 h-14 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300 relative z-10 transform-gpu`}>
+                  <div className={`w-14 h-14 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300 relative z-10`}>
                     {mode.icon}
                   </div>
 
@@ -142,13 +142,13 @@ export default function HomePage() {
           >
             <Link
               href="/leaderboard"
-              className="relative w-full flex items-center justify-between p-6 rounded-3xl group cursor-pointer border border-zinc-800 hover:border-blue-500/30 transition duration-300 hover:-translate-y-1 bg-[#0d1524]/80 transform-gpu"
+              className="relative w-full flex items-center justify-between p-6 rounded-3xl group cursor-pointer border border-zinc-800 hover:border-blue-500/30 transition duration-300 hover:-translate-y-1 bg-[#0d1524]/80"
               style={{ willChange: "transform, border-color" }}
             >
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               
               <div className="flex items-center gap-5 relative z-10">
-                <div className="w-12 h-12 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 group-hover:border-blue-500/30 transform-gpu">
+                <div className="w-12 h-12 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 group-hover:border-blue-500/30">
                   🏆
                 </div>
                 <div>
@@ -161,7 +161,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="relative z-10 w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-zinc-500 group-hover:text-white group-hover:bg-blue-600/20 group-hover:border-blue-500/30 transition-all duration-300 transform-gpu">
+              <div className="relative z-10 w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-zinc-500 group-hover:text-white group-hover:bg-blue-600/20 group-hover:border-blue-500/30 transition-all duration-300">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
