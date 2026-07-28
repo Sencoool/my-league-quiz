@@ -92,6 +92,7 @@ export interface UserProfileResponse {
   rank: string;
   streak: number;
   isGuest: boolean;
+  iconPath: string;
 }
 
 export interface LeaderboardUserResponse {
