@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# 🐻 Poro Guess UI
 
-First, run the development server:
+**The frontend interface for a multi-mode League of Legends guessing game**
+
+![Next.js](https://img.shields.io/badge/Next.js-15.5-000000?logo=nextdotjs)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
+
+</div>
+
+---
+
+## 🎮 Overview
+
+**Poro Guess UI** is the frontend client for an interactive League of Legends guessing web application. It features a modern, responsive, and highly interactive user interface designed to provide a premium gaming experience.
+
+The application communicates with the [Poro Guess API](https://github.com/Sencoool/poro-guess-api) and offers four distinct mini-games:
+
+| Mode | Description |
+|------|-------------|
+| 🏆 **Classic** | Daily champion guessing with dynamic attribute clues — Role, Species, Release Year, with directional comparison arrows |
+| 🧩 **Tile Reveal (Jigsaw)** | Grid-based image reveal puzzle — a region of the champion splash art is uncovered with each attempt |
+| 🔍 **Traits** | A Fan-Pantae-inspired progressive mystery game — 5 clues are unlocked one by one until the champion is identified |
+| ⚡ **Ability Matcher** | Memory-match card mechanics linking champion skills to their hotkey slots |
+
+---
+
+## 🏗️ Architecture & State Management
+
+The project is built using the new Next.js App Router for optimized routing and layout rendering. 
+
+- **State Management**: Handled globally via **Zustand** (`src/app/store/useGameStore.ts`), which manages user sessions, game progress, and active challenges seamlessly.
+- **Styling**: Utilizes **Tailwind CSS v4** for utility-first rapid styling, combined with custom CSS for complex micro-animations and glowing effects.
+- **Animations**: Powered by **Framer Motion** to deliver smooth, premium transitions, modal pop-ups, and game interactions.
+- **Authentication**: Supports seamless Guest sessions (auto-generated) and OAuth Google Login, handling conflict resolutions automatically.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) v15.5 (App Router)
+- **Library**: React 19
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS v4
+- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **Data Fetching**: Axios
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Extras**: Canvas Confetti (for victory screens)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) >= 20
+
+### 1. Clone & install
+
+```bash
+git clone https://github.com/Sencoool/poro-guess-ui.git
+cd poro-guess-ui
+npm install
+```
+
+### 2. Configure environment
+
+Create a `.env.local` file in the root directory (if not exists) and configure your API URL:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+*(Make sure the Poro Guess API is running locally on port 3000)*
+
+### 3. Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The UI will be available at: 🚀 **http://localhost:3001** (or 3000 if port is free).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📦 Build & Production
 
-## Learn More
+To build the application for production:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To start the production server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run start
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎨 UI/UX Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Responsive Design**: fully optimized for Mobile, Tablet, and Desktop screens.
+- **Glassmorphism & Glow Effects**: Premium visual aesthetics matching the League of Legends hextech/magical thematic.
+- **Seamless Auth Flow**: Guest accounts are instantly created upon entry. If a user logs in with Google and a conflict occurs, the system smoothly migrates the session without interrupting the user experience.
+- **Dynamic Avatars**: Players can select their favorite League of Legends champion as their profile icon.
+
+---
+
+## 📜 License
+
+UNLICENSED — private project.
