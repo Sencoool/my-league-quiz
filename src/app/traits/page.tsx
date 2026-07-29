@@ -282,7 +282,7 @@ export default function TraitsPage() {
                 <button 
                   onClick={() => search.length > 0 && submitGuess(selectedIndex >= 0 ? search[selectedIndex] : search[0])}
                   disabled={isSubmittingGuess || search.length === 0}
-                  className="w-12 h-12 flex items-center justify-center bg-[#111620] border border-yellow-600/50 rounded-full hover:bg-yellow-600/20 transition-colors disabled:opacity-50 cursor-pointer"
+                  className="w-12 h-12 shrink-0 flex items-center justify-center bg-[#111620] border border-yellow-600/50 rounded-full hover:bg-yellow-600/20 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </button>

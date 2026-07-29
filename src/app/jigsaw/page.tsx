@@ -38,6 +38,10 @@ export default function Jigsaw() {
   const domSearch = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Track which guesses have already been animated
+  const animatedGuesses = useRef<Set<number>>(new Set());
+  const initialLoadDone = useRef(false);
+
   // Initialize Session and Game Data
   useEffect(() => {
     initializeSession().then(() => {
@@ -129,6 +133,24 @@ export default function Jigsaw() {
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  const isLoading = !mounted || !user || !activeChallenge || !jigsawChallenge || championsList.length === 0 || !gameState;
+
+  // Prevent animation on initial load, only animate newly added guesses
+  useEffect(() => {
+    if (!isLoading) {
+      if (!initialLoadDone.current) {
+        if (progress) {
+          progress.guesses.forEach(g => animatedGuesses.current.add(g.champion.id));
+        }
+        initialLoadDone.current = true;
+      } else {
+        if (progress) {
+          progress.guesses.forEach(g => animatedGuesses.current.add(g.champion.id));
+        }
+      }
+    }
+  }, [isLoading, progress]);
 
   if (!mounted || !user || !activeChallenge || !jigsawChallenge || championsList.length === 0 || !gameState) {
     return (
@@ -290,20 +312,31 @@ export default function Jigsaw() {
             </div>
           )}
 
-          {progress && progress.guesses.length > 0 && (
-            <div className="mt-6 flex flex-col items-center w-full max-w-[90%]">
-              <p className="text-zinc-400 text-sm font-medium mb-3 uppercase tracking-wider">Recent Guesses</p>
+          <div className="mt-6 flex flex-col items-center w-full max-w-[90%] min-h-[90px]">
+            <p className="text-zinc-400 text-sm font-medium mb-3 uppercase tracking-wider">Recent Guesses</p>
+            {(!progress || progress.guesses.length === 0) ? (
+              <div className="text-zinc-600 italic text-sm flex items-center justify-center min-h-[32px]">
+                Make your first guess!
+              </div>
+            ) : (
               <div className="flex flex-wrap justify-center gap-2">
                 {[...progress.guesses].reverse().map((guess, idx) => {
                   const isCorrect = guess.champion.id === progress.targetChampionId;
+                  const isNewGuess = initialLoadDone.current && !animatedGuesses.current.has(guess.champion.id);
+                  const animationStyle = isNewGuess ? {
+                    animation: `answerDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards`,
+                    opacity: 0
+                  } : { opacity: 1 };
+                  
                   return (
                     <div 
-                      key={idx} 
-                      className={`flex items-center gap-2 pr-3 pl-1 py-1 rounded-full text-sm font-medium animate-fade-in shadow-sm border ${
+                      key={progress.guesses.length - idx} 
+                      className={`flex items-center gap-2 pr-3 pl-1 py-1 rounded-full text-sm font-medium shadow-sm border ${
                         isCorrect 
                           ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-300' 
                           : 'bg-rose-500/10 border-rose-500/20 text-rose-300'
                       }`}
+                      style={animationStyle}
                     >
                       <img
                         src={getImageUrl(guess.champion.iconPath)}
@@ -318,8 +351,8 @@ export default function Jigsaw() {
                   );
                 })}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
         </div>
 

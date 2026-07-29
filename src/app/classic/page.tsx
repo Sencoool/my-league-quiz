@@ -95,21 +95,27 @@ export default function Home() {
   const animatedGuesses = useRef<Set<number>>(new Set());
   const initialLoadDone = useRef(false);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   // Prevent animation on initial load, only animate newly added guesses
+  const isLoading = !mounted || !user || !activeChallenge || championsList.length === 0;
+
   useEffect(() => {
-    if (progress) {
+    if (!isLoading) {
       if (!initialLoadDone.current) {
-        progress.guesses.forEach(g => animatedGuesses.current.add(g.champion.id));
+        if (progress) {
+          progress.guesses.forEach(g => animatedGuesses.current.add(g.champion.id));
+        }
         initialLoadDone.current = true;
       } else {
         // We add new guesses to the set so they don't animate again on next render
-        progress.guesses.forEach(g => animatedGuesses.current.add(g.champion.id));
+        if (progress) {
+          progress.guesses.forEach(g => animatedGuesses.current.add(g.champion.id));
+        }
       }
-    } else {
-      initialLoadDone.current = false;
-      animatedGuesses.current.clear();
     }
-  }, [progress]);
+  }, [isLoading, progress]);
 
   // Initialize Session and Game Data
   useEffect(() => {
@@ -190,8 +196,7 @@ export default function Home() {
     setSelectedIndex(-1);
   }, [search]);
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+
 
   // Loading state
   if (!mounted || !user || !activeChallenge || championsList.length === 0) {

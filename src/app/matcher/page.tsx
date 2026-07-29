@@ -419,7 +419,7 @@ export default function MatcherPage() {
         </div>
 
         {alreadyCompleted ? (
-          <div className="flex flex-col items-center bg-[#1E293B] border border-emerald-500/30 p-10 rounded-3xl shadow-2xl max-w-lg w-full text-center gap-3">
+          <div className="flex flex-col items-center bg-[#1E293B] border border-emerald-500/30 p-10 rounded-3xl shadow-2xl max-w-5xl w-full text-center gap-3">
             <div className="text-5xl">🏆</div>
             <h2 className="text-2xl font-bold text-emerald-400">Already Completed!</h2>
             <p className="text-zinc-400 text-sm">You already matched all pairs today.</p>
