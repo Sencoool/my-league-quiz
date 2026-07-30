@@ -4,6 +4,8 @@
 
 **The frontend interface for a multi-mode League of Legends guessing game**
 
+### 🎮 Play Now: [https://poro-guess.vercel.app](https://poro-guess.vercel.app)
+
 ![Next.js](https://img.shields.io/badge/Next.js-15.5-000000?logo=nextdotjs)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss)
