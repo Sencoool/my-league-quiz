@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import SafeImage from "./SafeImage";
 import Link from "next/link";
 import { ChampionEntity, UserProgressResponse, DailyChallengeService, UserProgressService } from "../utils/api";
 import { getImageUrl } from "../utils/image";
@@ -390,7 +391,7 @@ export default function VictoryModal({
         {targetChamp ? (
           <div className="flex flex-col items-center px-6 pt-5 pb-4 gap-2">
             <div className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 shadow-xl ${isWon ? "border-emerald-500/60" : "border-rose-500/60"}`}>
-              <img src={getImageUrl(targetChamp.iconPath)} alt={targetChamp.name} className="w-full h-full object-cover" onError={e => (e.currentTarget.src = "/img/Red.png")} />
+              <SafeImage src={getImageUrl(targetChamp.iconPath)} alt={targetChamp.name} className="w-full h-full object-cover"   width={300} height={300} fallbackSrc="/img/Red.png" />
             </div>
             <p className="text-xl font-bold text-white tracking-wide">{targetChamp.name}</p>
             <div className="flex items-center gap-2 flex-wrap justify-center">

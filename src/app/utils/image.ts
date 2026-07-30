@@ -7,7 +7,13 @@
  * @returns The absolute URL to the image
  */
 export const getImageUrl = (path: string | undefined): string => {
-  if (!path) return "/img/Red.png"; // Fallback image
+  // If path is empty, return the default Poro avatar
+  if (!path) return "/img/default-avatar.png"; 
+
+  // Intercept dead GitHub Poro URL and use the local Poro image instead
+  if (path === 'https://raw.githubusercontent.com/DotA2-Fans/Icons/main/summoners_rift/icons/poro.png') {
+    return '/img/default-avatar.png';
+  }
 
   // If path is already an absolute URL (e.g. from external seed), return it
   if (path.startsWith('http://') || path.startsWith('https://')) {

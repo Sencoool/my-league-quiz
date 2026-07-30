@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import SafeImage from "../components/SafeImage";
 import { useGameStore } from "../store/useGameStore";
 import { useTraitsStore } from "../store/useTraitsStore";
 import { ChampionEntity } from "../utils/api";
@@ -251,12 +252,12 @@ export default function TraitsPage() {
                   className="w-full flex items-center justify-between p-3 bg-zinc-300 rounded-lg cursor-pointer hover:bg-zinc-200 transition-colors shadow-sm text-black group animate-fade-in"
                 >
                   <div className="flex items-center gap-4 font-bold text-lg">
-                    <img
+                    <SafeImage
                       src={getImageUrl(targetChamp.iconPath)}
                       alt={targetChamp.name}
                       className="w-10 h-10 rounded-full object-cover shadow-sm border border-black/10"
-                      onError={(e) => (e.currentTarget.src = "/img/Red.png")}
-                    />
+                      
+                     width={40} height={40} fallbackSrc="/img/Red.png" />
                     <span className="tracking-wide uppercase truncate">{targetChamp.name}</span>
                   </div>
                   <div className="text-zinc-500 group-hover:text-zinc-800 transition-colors text-sm font-bold flex items-center gap-1">
@@ -303,7 +304,7 @@ export default function TraitsPage() {
                       index === selectedIndex ? "bg-zinc-800" : ""
                     }`}
                   >
-                    <img src={getImageUrl(c.iconPath)} alt={c.name} className="w-10 h-10 object-cover rounded-md" />
+                    <SafeImage src={getImageUrl(c.iconPath)} alt={c.name} className="w-10 h-10 object-cover rounded-md"  width={40} height={40} fallbackSrc="/img/Red.png" />
                     <span className="font-medium text-lg">{c.name}</span>
                   </div>
                 ))}
@@ -343,14 +344,14 @@ export default function TraitsPage() {
                           : 'bg-rose-500/10 border-rose-500/20 text-rose-300'
                       }`}
                     >
-                      <img
+                      <SafeImage
                         src={getImageUrl(guess.champion.iconPath)}
                         alt={guess.champion.name}
                         className={`w-7 h-7 rounded-full object-cover border ${
                           isCorrect ? 'border-emerald-500/50' : 'border-rose-500/30'
                         }`}
-                        onError={(e) => (e.currentTarget.src = "/img/Red.png")}
-                      />
+                        
+                       width={64} height={64} fallbackSrc="/img/Red.png" />
                       <span>{guess.champion.name}</span>
                     </div>
                   );

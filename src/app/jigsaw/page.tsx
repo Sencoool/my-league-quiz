@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import SafeImage from "../components/SafeImage";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { useGameStore } from "../store/useGameStore";
@@ -202,11 +203,11 @@ export default function Jigsaw() {
           <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg border-2 border-white/10 mb-8 bg-zinc-900">
             {/* The actual image */}
             {jigsawChallenge.imagePath && (
-              <img 
+              <SafeImage 
                 src={getImageUrl(jigsawChallenge.imagePath)} 
                 alt="Splash" 
                 className="absolute inset-0 w-full h-full object-cover" 
-              />
+               width={300} height={300} fallbackSrc="/img/Red.png" />
             )}
             
             {/* Grid overlay */}
@@ -237,12 +238,12 @@ export default function Jigsaw() {
                   className="w-full flex items-center justify-between p-4 bg-zinc-300 rounded-xl cursor-pointer hover:bg-zinc-200 transition-colors shadow-sm text-black group animate-fade-in"
                 >
                   <div className="flex items-center gap-4 font-bold text-lg">
-                    <img
+                    <SafeImage
                       src={getImageUrl(targetChamp.iconPath)}
                       alt={targetChamp.name}
                       className="w-12 h-12 rounded-full object-cover shadow-sm border border-black/10"
-                      onError={(e) => (e.currentTarget.src = "/img/Red.png")}
-                    />
+                      
+                     width={48} height={48} fallbackSrc="/img/Red.png" />
                     <span className="tracking-wide uppercase truncate">{targetChamp.name}</span>
                   </div>
                   <div className="text-zinc-500 group-hover:text-zinc-800 transition-colors text-sm font-bold flex items-center gap-1">
@@ -282,14 +283,14 @@ export default function Jigsaw() {
                     className={`flex items-center gap-4 p-3 border-b border-white/5 transition-colors cursor-pointer ${selectedIndex === index ? "bg-blue-500/20 text-blue-100" : "hover:bg-white/5 text-zinc-300"}`}
                     onClick={() => selectAnswer(champion)}
                   >
-                    <img
+                    <SafeImage
                       width={40}
                       height={40}
                       src={getImageUrl(champion.iconPath)}
                       alt={champion.name}
                       className="w-10 h-10 object-cover rounded shadow-md border border-white/10"
-                      onError={(e) => (e.currentTarget.src = "/img/Red.png")}
-                    />
+                      
+                     fallbackSrc="/img/Red.png" />
                     <span className="font-medium text-lg">{champion.name}</span>
                   </div>
                 ))
@@ -338,14 +339,14 @@ export default function Jigsaw() {
                       }`}
                       style={animationStyle}
                     >
-                      <img
+                      <SafeImage
                         src={getImageUrl(guess.champion.iconPath)}
                         alt={guess.champion.name}
                         className={`w-7 h-7 rounded-full object-cover border ${
                           isCorrect ? 'border-emerald-500/50' : 'border-rose-500/30'
                         }`}
-                        onError={(e) => (e.currentTarget.src = "/img/Red.png")}
-                      />
+                        
+                       width={64} height={64} fallbackSrc="/img/Red.png" />
                       <span>{guess.champion.name}</span>
                     </div>
                   );

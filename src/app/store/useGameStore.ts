@@ -12,10 +12,13 @@ import {
   UserProgressService
 } from '../utils/api';
 
+const SESSION_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
 interface GameState {
   // Auth / User state
   user: UserProfileResponse | null;
   isLoadingUser: boolean;
+  lastSessionRefresh: number; // Unix timestamp ms
   
   // Game data state
   classicChallenge: DailyChallengeResponse | null;
@@ -55,6 +58,7 @@ export const useGameStore = create<GameState>()(
       // Initial state
       user: null,
       isLoadingUser: false,
+      lastSessionRefresh: 0,
       
       classicChallenge: null,
       jigsawChallenge: null,
@@ -74,16 +78,20 @@ export const useGameStore = create<GameState>()(
       triggerVictoryModal: (mode) => set({ showVictoryModalMode: mode }),
       clearVictoryModal: () => set({ showVictoryModalMode: null }),
       
-      // Initialize User Session
+      // Initialize User Session (debounced — skips if refreshed within 5 minutes)
       initializeSession: async () => {
-        const { user } = get();
+        const { user, lastSessionRefresh } = get();
+        const now = Date.now();
+        if (user && now - lastSessionRefresh < SESSION_REFRESH_INTERVAL_MS) {
+          return; // Already fresh, skip network call
+        }
         
         // 1. If JWT token exists, try to use it first
         if (AuthService.hasToken()) {
           try {
             set({ isLoadingUser: true });
             const me = await UserService.getMe();
-            set({ user: me, isLoadingUser: false });
+            set({ user: me, isLoadingUser: false, lastSessionRefresh: Date.now() });
             return;
           } catch (e) {
             // Token expired or invalid — clear it and fall through to guest
@@ -97,7 +105,7 @@ export const useGameStore = create<GameState>()(
           try {
             set({ isLoadingUser: true });
             const freshUser = await UserService.getUser(user.id);
-            set({ user: freshUser, isLoadingUser: false });
+            set({ user: freshUser, isLoadingUser: false, lastSessionRefresh: Date.now() });
             return;
           } catch (e) {
             console.error('Failed to load existing user, creating new guest...', e);
@@ -108,7 +116,7 @@ export const useGameStore = create<GameState>()(
         try {
           set({ isLoadingUser: true });
           const newGuest = await UserService.createGuest();
-          set({ user: newGuest, isLoadingUser: false });
+          set({ user: newGuest, isLoadingUser: false, lastSessionRefresh: Date.now() });
         } catch (e) {
           console.error('Error creating guest user:', e);
           set({ isLoadingUser: false });
@@ -117,6 +125,15 @@ export const useGameStore = create<GameState>()(
       
       // Fetch initial game data (Challenges and Champions)
       fetchInitialData: async () => {
+        // If data is already hydrated by Server Components (StoreInitializer), skip network request
+        if (get().championsList.length > 0 && get().classicChallenge) {
+          const { user, activeChallenge } = get();
+          if (user && activeChallenge) {
+            get().loadProgress();
+          }
+          return;
+        }
+
         try {
           set({ isLoadingData: true });
           const [challenges, champions] = await Promise.all([
@@ -262,8 +279,11 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: 'poro-guess-storage',
-      // Only persist the user object to localStorage so we don't lose the guest ID!
-      partialize: (state) => ({ user: state.user }),
+      // Persist user + refresh timestamp — everything else is fetched server-side
+      partialize: (state) => ({
+        user: state.user,
+        lastSessionRefresh: state.lastSessionRefresh,
+      }),
     }
   )
 );

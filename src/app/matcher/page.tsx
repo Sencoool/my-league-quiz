@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, memo } from "react";
+import SafeImage from "../components/SafeImage";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { useGameStore } from "../store/useGameStore";
@@ -132,13 +133,13 @@ const Card = memo(function Card({
           }}
           className="rounded-xl border-2 border-yellow-400/70 overflow-hidden shadow-[0_0_8px_rgba(234,179,8,0.3)]"
         >
-          <img
+          <SafeImage
             src={card.iconPath}
             alt={card.name}
             className="w-full h-full object-cover"
             loading="lazy"
-            onError={(e) => (e.currentTarget.src = "/img/Red.png")}
-          />
+            
+           width={300} height={300} fallbackSrc="/img/Red.png" />
         </div>
       </div>
     </button>
@@ -476,9 +477,7 @@ export default function MatcherPage() {
               </div>
             </div>
 
-            {!gameStarted && (
-              <p className="mt-4 text-zinc-500 text-sm animate-pulse">👆 Tap any card to start the timer!</p>
-            )}
+
             {gameOver && (
               <div className="mt-4"><CountdownTimer className="text-zinc-500 text-sm" /></div>
             )}

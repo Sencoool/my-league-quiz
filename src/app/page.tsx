@@ -1,9 +1,8 @@
-"use client";
-
 import Link from "next/link";
 import Header from "./components/header";
 import Footer from "./components/footer";
 import Image from "next/image";
+import PatchNotesModal from "./components/PatchNotesModal";
 
 const GAME_MODES = [
   {
@@ -78,6 +77,18 @@ export default function HomePage() {
             </p>
           </div>
 
+          {/* Patch Notes Banner */}
+          <div
+            className="w-full mb-4 relative z-10"
+            style={{
+              animation: `answerDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards`,
+              animationDelay: `0s`,
+              opacity: 0
+            }}
+          >
+            <PatchNotesModal />
+          </div>
+
           {/* Game Modes Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full mb-8 z-10 relative">
             {GAME_MODES.map((mode, index) => {
@@ -96,8 +107,7 @@ export default function HomePage() {
                   style={{ 
                     animation: `answerDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards`,
                     animationDelay: `${index * 0.1}s`,
-                    opacity: 0,
-                    willChange: "transform, opacity, border-color"
+                    opacity: 0
                   }}
                 >
                   {/* Inset Gradient Hover Reveal */}
@@ -143,7 +153,6 @@ export default function HomePage() {
             <Link
               href="/leaderboard"
               className="relative w-full flex items-center justify-between p-6 rounded-3xl group cursor-pointer border border-zinc-800 hover:border-blue-500/30 transition duration-300 hover:-translate-y-1 bg-[#0d1524]/80"
-              style={{ willChange: "transform, border-color" }}
             >
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               
@@ -168,6 +177,7 @@ export default function HomePage() {
               </div>
             </Link>
           </div>
+
 
         </div>
       </main>

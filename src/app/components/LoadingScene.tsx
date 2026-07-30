@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from "react";
+import SafeImage from "./SafeImage";
+
 export type LoadingSceneType = 'classic' | 'traits' | 'jigsaw' | 'matcher' | 'leaderboard' | 'default';
 
 export default function LoadingScene({ type = 'default', text = "Loading..." }: { type?: LoadingSceneType, text?: string }) {
@@ -159,40 +162,80 @@ export default function LoadingScene({ type = 'default', text = "Loading..." }: 
         {/* Stats Card Skeleton */}
         <div className="flex flex-col items-center w-full bg-[#1E293B]/60 border border-white/5 p-6 rounded-3xl shadow-2xl max-w-5xl mb-5 relative">
           
-          <div className="w-full relative flex items-center justify-center mb-1 mt-2">
-            <h1 className="text-3xl md:text-4xl font-bold text-center tracking-wide px-4 flex flex-col md:flex-row flex-wrap justify-center items-center gap-2">
-              <span className="block h-8 md:h-10 bg-zinc-800/80 rounded-xl animate-pulse w-32 md:w-56 mb-1 md:mb-0"></span>
-              <span className="block h-8 md:h-10 bg-zinc-800/80 rounded-xl animate-pulse w-40 md:w-64"></span>
+          <div className="w-full relative flex flex-col items-center justify-center mb-1 mt-2">
+            <h1 className="text-3xl md:text-4xl font-bold text-center tracking-wide px-12 relative text-transparent select-none pointer-events-none">
+              Poro Guess <span className="font-light">Icon Matcher</span>
+              <div className="absolute inset-0 flex flex-col md:flex-row items-center justify-center gap-2">
+                <div className="h-8 md:h-10 w-40 md:w-48 bg-zinc-800/80 rounded-xl animate-pulse" />
+                <div className="h-8 md:h-10 w-48 md:w-56 bg-zinc-800/80 rounded-xl animate-pulse" />
+              </div>
             </h1>
             <div className="absolute right-0 top-0 md:right-4 w-8 h-8 rounded-full bg-zinc-800/80 border border-white/10 animate-pulse" />
           </div>
-          <div className="h-4 w-64 md:w-96 bg-zinc-800/80 rounded-xl animate-pulse mb-4 mt-2" />
-
-          <div className="flex items-center justify-center gap-6 md:gap-12 w-full flex-wrap">
-            <div className="flex flex-col items-center gap-1">
-              <div className="h-3 w-10 bg-zinc-800/80 rounded animate-pulse" />
-              <div className="h-8 w-16 md:w-20 bg-zinc-800/80 rounded animate-pulse" />
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="h-3 w-10 bg-zinc-800/80 rounded animate-pulse" />
-              <div className="h-8 w-16 md:w-20 bg-zinc-800/80 rounded animate-pulse" />
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="h-3 w-10 bg-zinc-800/80 rounded animate-pulse" />
-              <div className="h-8 w-16 md:w-20 bg-zinc-800/80 rounded animate-pulse" />
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="h-3 w-10 bg-zinc-800/80 rounded animate-pulse" />
-              <div className="h-8 w-20 md:w-28 bg-zinc-800/80 rounded animate-pulse" />
+          
+          <div className="relative w-full text-center">
+            <p className="text-sm mb-4 text-transparent select-none pointer-events-none">
+              Match all 16 pairs of champion icons as fast as you can!
+            </p>
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 pb-4">
+               <div className="h-3 w-56 md:w-96 bg-zinc-800/80 rounded animate-pulse" />
+               <div className="h-3 w-40 bg-zinc-800/80 rounded animate-pulse md:hidden" />
             </div>
           </div>
 
+          {/* Stats Skeleton */}
+          <div className="flex items-center justify-center gap-6 md:gap-12 w-full flex-wrap">
+            <div className="flex flex-col items-center relative">
+              <span className="text-xs uppercase tracking-widest mb-1 text-transparent select-none pointer-events-none">Time</span>
+              <span className="text-2xl font-mono font-bold text-transparent select-none pointer-events-none">00:00</span>
+              <div className="absolute inset-0 flex flex-col items-center gap-1">
+                <div className="h-4 w-10 bg-zinc-800/80 rounded animate-pulse" />
+                <div className="h-8 w-16 md:w-20 bg-zinc-800/80 rounded-lg animate-pulse" />
+              </div>
+            </div>
+            <div className="flex flex-col items-center relative">
+              <span className="text-xs uppercase tracking-widest mb-1 text-transparent select-none pointer-events-none">Pairs</span>
+              <span className="text-2xl font-mono font-bold text-transparent select-none pointer-events-none">0/16</span>
+              <div className="absolute inset-0 flex flex-col items-center gap-1">
+                <div className="h-4 w-10 bg-zinc-800/80 rounded animate-pulse" />
+                <div className="h-8 w-14 bg-zinc-800/80 rounded-lg animate-pulse" />
+              </div>
+            </div>
+            <div className="flex flex-col items-center relative">
+              <span className="text-xs uppercase tracking-widest mb-1 text-transparent select-none pointer-events-none">Moves</span>
+              <span className="text-2xl font-mono font-bold text-transparent select-none pointer-events-none">0</span>
+              <div className="absolute inset-0 flex flex-col items-center gap-1">
+                <div className="h-4 w-10 bg-zinc-800/80 rounded animate-pulse" />
+                <div className="h-8 w-6 bg-zinc-800/80 rounded-lg animate-pulse" />
+              </div>
+            </div>
+            <div className="flex flex-col items-center relative">
+              <span className="text-xs uppercase tracking-widest mb-1 text-transparent select-none pointer-events-none">Score</span>
+              <span className="text-2xl font-mono font-bold text-transparent select-none pointer-events-none">
+                10<span className="text-sm font-normal"> pts</span>
+              </span>
+              <div className="absolute inset-0 flex flex-col items-center gap-1">
+                <div className="h-4 w-10 bg-zinc-800/80 rounded animate-pulse" />
+                <div className="h-8 w-16 bg-zinc-800/80 rounded-lg animate-pulse" />
+              </div>
+            </div>
+          </div>
+
+          {/* Progress Bar Skeleton */}
           <div className="w-full mt-4 bg-zinc-800/60 rounded-full h-2 animate-pulse" />
-          <div className="flex gap-4 mt-3 flex-wrap justify-center">
-            <div className="h-3 w-20 bg-zinc-800/80 rounded animate-pulse" />
-            <div className="h-3 w-20 bg-zinc-800/80 rounded animate-pulse" />
-            <div className="h-3 w-20 bg-zinc-800/80 rounded animate-pulse" />
-            <div className="h-3 w-20 bg-zinc-800/80 rounded animate-pulse" />
+          
+          {/* Legend Skeleton */}
+          <div className="flex gap-4 mt-3 relative text-xs">
+            <span className="flex items-center gap-1.5 text-transparent select-none pointer-events-none"><span className="w-2 h-2 rounded-full inline-block" />&lt;30s = 10 pts</span>
+            <span className="flex items-center gap-1.5 text-transparent select-none pointer-events-none"><span className="w-2 h-2 rounded-full inline-block" />&lt;60s = 7 pts</span>
+            <span className="flex items-center gap-1.5 text-transparent select-none pointer-events-none"><span className="w-2 h-2 rounded-full inline-block" />&lt;90s = 4 pts</span>
+            <span className="flex items-center gap-1.5 text-transparent select-none pointer-events-none"><span className="w-2 h-2 rounded-full inline-block" />90s+ = 1 pt</span>
+            <div className="absolute inset-0 flex gap-4 items-center">
+              <div className="h-4 w-16 md:w-20 bg-zinc-800/80 rounded animate-pulse" />
+              <div className="h-4 w-16 md:w-20 bg-zinc-800/80 rounded animate-pulse" />
+              <div className="h-4 w-16 md:w-20 bg-zinc-800/80 rounded animate-pulse" />
+              <div className="h-4 w-16 md:w-20 bg-zinc-800/80 rounded animate-pulse" />
+            </div>
           </div>
         </div>
 
@@ -244,11 +287,11 @@ export default function LoadingScene({ type = 'default', text = "Loading..." }: 
       <div className="relative flex flex-col items-center justify-center p-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-blue-500/20 blur-[50px] rounded-full animate-pulse pointer-events-none" />
         <div className="relative w-24 h-24">
-          <img 
+          <SafeImage 
             src="/img/logo.png" 
             alt="Poro Guess Logo" 
             className="w-full h-full object-contain rounded-full border-2 border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.5)] animate-bounce"
-          />
+           width={300} height={300} fallbackSrc="/img/Red.png" />
         </div>
         {text && <div className="mt-4 text-zinc-400 font-medium tracking-wide animate-pulse">{text}</div>}
       </div>

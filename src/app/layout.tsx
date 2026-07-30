@@ -13,27 +13,54 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PoroGuess",
-  description: "Guess the champion based on league of legends game!",
+  title: {
+    default: "PoroGuess – Daily LoL Champion Challenge",
+    template: "%s | PoroGuess",
+  },
+  description:
+    "PoroGuess is a daily League of Legends guessing game. Play Classic, Jigsaw, Traits, and Icon Matcher modes to test your LoL champion knowledge!",
+  icons: {
+    icon: "/img/logo.png",
+  },
+  openGraph: {
+    title: "PoroGuess – Daily LoL Champion Challenge",
+    description:
+      "Play daily League of Legends champion guessing games. Classic, Jigsaw, Traits, and Icon Matcher modes await!",
+    type: "website",
+    siteName: "PoroGuess",
+  },
+  twitter: {
+    card: "summary",
+    title: "PoroGuess – Daily LoL Champion Challenge",
+    description: "Can you guess today's mystery LoL champion? Play daily challenges across 4 game modes!",
+  },
 };
 
-export default function RootLayout({
+import { getServerChampions, getServerChallenges } from "./utils/serverApi";
+import StoreInitializer from "./components/StoreInitializer";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch data on the server with Next.js caching
+  const champions = await getServerChampions();
+  const challenges = await getServerChallenges();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <StoreInitializer champions={champions} challenges={challenges} />
+        
         <div className="relative min-h-screen bg-[#060b14] text-white selection:bg-blue-900">
-          {/* Global Background Image - using will-change to promote to its own GPU layer */}
+          {/* Global Background Image */}
           <div 
             className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
             style={{ 
               backgroundImage: "url('/PoroGuessBG.jpg')",
-              willChange: "transform",
               opacity: 0.8,
             }}
           />

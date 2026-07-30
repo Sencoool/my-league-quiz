@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import SafeImage from "./SafeImage";
 import { useGameStore } from "../store/useGameStore";
 import Link from "next/link";
 import ProfileModal from "./ProfileModal";
@@ -61,11 +62,11 @@ export default function Header() {
       <div className="flex-1 flex justify-start">
         <Link href="/" className="group flex items-center gap-2 sm:gap-3 transition-transform duration-200 hover:scale-[1.02] shrink-0">
           <div className="relative shrink-0 w-10 h-10 sm:w-11 sm:h-11">
-            <img 
+            <SafeImage 
               src="/img/logo.png" 
               alt="Poro Guess Logo" 
               className="w-full h-full object-contain rounded-full border border-white/20 transition-transform duration-200 group-hover:rotate-6 shrink-0" 
-            />
+             width={300} height={300} fallbackSrc="/img/Red.png" />
           </div>
           <div className="flex flex-col justify-center -space-y-1 shrink-0">
             <span className="text-[1.1rem] sm:text-2xl tracking-wider flex items-center">
@@ -123,12 +124,12 @@ export default function Header() {
                   className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
                   style={{ borderColor: rankInfo.color }}
                 >
-                  <img 
+                  <SafeImage 
                     src={getImageUrl(user.iconPath) || "/img/default-avatar.png"} 
                     alt={user.username} 
                     className="w-full h-full object-cover scale-[1.15]"
-                    onError={(e) => (e.currentTarget.src = "/img/default-avatar.png")}
-                  />
+                    
+                   width={300} height={300} fallbackSrc="/img/Red.png" />
                 </div>
                 <div className="absolute -bottom-1 -right-1 bg-[#1e232d] rounded-full scale-75 sm:scale-100">
                   <RankIcon rank={user.rank || 'IRON'} size={18} />

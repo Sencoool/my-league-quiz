@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useDeferredValue } from "react";
+import SafeImage from "./SafeImage";
 import { useRouter } from "next/navigation";
 import {
   DailyChallengeService,
@@ -159,7 +160,7 @@ function AvatarPickerModal({
 
   const allAvatars = [
     { id: "poro-default", name: "Poro", iconPath: "" },
-    ...championsList,
+    ...[...championsList].sort((a, b) => a.name.localeCompare(b.name)),
   ];
 
   const filtered = allAvatars.filter((c) =>
@@ -215,13 +216,13 @@ function AvatarPickerModal({
                         : "border-zinc-800 hover:border-zinc-400 opacity-80 hover:opacity-100"
                     }`}
                   >
-                    <img
+                    <SafeImage
                       src={champ.iconPath ? getImageUrl(champ.iconPath) : "/img/default-avatar.png"}
                       alt={champ.name}
                       className="w-full h-full object-cover scale-[1.15] transition-transform duration-300 group-hover:scale-[1.25]"
                       loading="lazy"
-                      onError={(e) => (e.currentTarget.src = "/img/default-avatar.png")}
-                    />
+                      
+                     width={300} height={300} fallbackSrc="/img/Red.png" />
                   </div>
                   {isSelected && (
                     <div className="absolute -bottom-1 -right-1 bg-[#0a0f18] rounded-full p-[3px] shadow-lg pointer-events-none">
@@ -324,7 +325,6 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
   const [challenges, setChallenges] = useState<DailyChallengeResponse[]>([]);
   const [progressMap, setProgressMap] = useState<Record<string, UserProgressResponse | null>>({});
   const [loading, setLoading] = useState(false);
-  const hasLoaded = useRef(false);
 
   // Username Editing State
   const [isEditingName, setIsEditingName] = useState(false);
@@ -389,11 +389,14 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
   };
 
   useEffect(() => {
-    if (!show || hasLoaded.current) return;
-    hasLoaded.current = true;
+    if (!show) return;
 
     const fetchAll = async () => {
-      setLoading(true);
+      // Only show loading indicator if we don't have cached data yet
+      if (challenges.length === 0) {
+        setLoading(true);
+      }
+      
       try {
         if (championsList.length === 0) {
           await useGameStore.getState().fetchInitialData();
@@ -418,17 +421,9 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
         setLoading(false);
       }
     };
+    
     fetchAll();
   }, [show, user.id]);
-
-  // Reset on close so next open re-fetches
-  useEffect(() => {
-    if (!show) {
-      hasLoaded.current = false;
-      setChallenges([]);
-      setProgressMap({});
-    }
-  }, [show]);
 
   if (!show) return null;
 
@@ -449,15 +444,18 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
 
 
       
-      {/* Backdrop & Centered Container */}
+      {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4" 
+        className="fixed inset-0 bg-black/80 z-[100] will-change-opacity" 
         onClick={onClose}
         style={{ animation: "slideDown 0.2s ease forwards" }}
-      >
+      />
+      
+      {/* Centered Modal Container */}
+      <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 pointer-events-none">
         {/* Modal Panel Animation Wrapper */}
         <div
-          className="w-full max-w-[520px] max-h-[90vh] shadow-2xl relative flex flex-col rounded-[2rem]"
+          className="pointer-events-auto w-full max-w-[520px] max-h-[90vh] shadow-2xl relative flex flex-col rounded-[2rem]"
           style={{ 
             animation: "answerDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards"
           }}
@@ -466,7 +464,6 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
           {/* Scrollable Content Container */}
           <div 
             className="w-full h-full overflow-y-auto custom-scrollbar bg-[#0d1524] border border-zinc-800 rounded-[2rem] flex flex-col overflow-hidden"
-            style={{ clipPath: "inset(0 0 0 0 round 2rem)" }}
           >
           {showAvatarPicker ? (
             <AvatarPickerModal
@@ -489,12 +486,12 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
                 className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-4 shadow-lg bg-[#0d1524] transition-all group-hover:opacity-80 ${isSavingAvatar ? 'animate-pulse' : ''}`}
                 style={{ borderColor: rankInfo.color }}
               >
-                <img
+                <SafeImage
                   src={getImageUrl(user.iconPath) || "/img/default-avatar.png"}
                   alt={user.username}
                   className="w-full h-full object-cover scale-[1.15]"
-                  onError={(e) => (e.currentTarget.src = "/img/default-avatar.png")}
-                />
+                  
+                 width={300} height={300} fallbackSrc="/img/Red.png" />
               </div>
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full bg-black/40 pointer-events-none">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
@@ -689,7 +686,7 @@ export default function ProfileModal({ show, user, onClose }: ProfileModalProps)
               ) : (
                 <button
                   onClick={() => { logout(); onClose(); }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-zinc-800 hover:bg-rose-900/40 border border-zinc-700 hover:border-rose-500/40 text-zinc-400 hover:text-rose-400 font-medium text-sm transition-all cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 hover:border-zinc-600 text-zinc-400 hover:text-zinc-300 font-medium text-sm transition-all cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>

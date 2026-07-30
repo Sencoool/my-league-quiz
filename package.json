@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-virtual": "^3.14.9",
     "axios": "^1.8.2",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",

@@ -81,11 +81,11 @@
 
 @keyframes answerDown {
   from {
-    transform: translate3d(0, -10%, 0);
+    transform: translateY(-10%);
     opacity: 0;
   }
   to {
-    transform: translate3d(0, 0, 0);
+    transform: translateY(0);
     opacity: 1;
   }
 }
