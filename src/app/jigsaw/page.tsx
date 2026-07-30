@@ -207,7 +207,10 @@ export default function Jigsaw() {
                 src={getImageUrl(jigsawChallenge.imagePath)} 
                 alt="Splash" 
                 className="absolute inset-0 w-full h-full object-cover" 
-               width={300} height={300} fallbackSrc="/img/Red.png" />
+                width={1920} height={1080} 
+                fallbackSrc="/img/Red.png" 
+                unoptimized={true} 
+              />
             )}
             
             {/* Grid overlay */}
