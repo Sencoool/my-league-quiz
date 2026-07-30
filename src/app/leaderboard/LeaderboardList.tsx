@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useVirtualizer } from '@tanstack/react-virtual';
 import SafeImage from "../components/SafeImage";
 import { useGameStore } from "../store/useGameStore";
-import { LeaderboardUserResponse } from "../utils/api";
+import { LeaderboardUserResponse, AuthService } from "../utils/api";
 import { getImageUrl } from "../utils/image";
 
 const RANK_THRESHOLDS = [
@@ -121,7 +121,7 @@ function PlayerRow({
 
 
 /** Full overlay shown to guests covering the leaderboard */
-function GuestOverlay() {
+function GuestOverlay({ userId }: { userId?: string }) {
   return (
     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 bg-[#0f172a]/80">
       <div className="bg-gradient-to-br from-[#1e293b] to-[#0f172a] border border-blue-500/30 rounded-3xl p-8 sm:p-10 flex flex-col items-center gap-6 shadow-2xl w-full max-w-md text-center transform hover:scale-[1.02] transition-transform duration-300">
@@ -134,9 +134,9 @@ function GuestOverlay() {
             Sign in to track your progress, save your daily streak, and compete with players worldwide on the top 500 leaderboard.
           </p>
         </div>
-        <a
-          href="/auth/google"
-          className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white text-zinc-900 rounded-xl font-bold text-base hover:bg-zinc-100 transition-all shadow-lg hover:shadow-xl active:scale-95 mt-2"
+        <button
+          onClick={() => AuthService.loginWithGoogle(userId)}
+          className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white text-zinc-900 rounded-xl font-bold text-base hover:bg-zinc-200 transition-colors shadow-sm mt-2 cursor-pointer"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -145,7 +145,7 @@ function GuestOverlay() {
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
           Sign in with Google
-        </a>
+        </button>
       </div>
     </div>
   );
@@ -162,8 +162,29 @@ export default function LeaderboardList({ leaderboard }: { leaderboard: Leaderbo
 
   if (leaderboard.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-zinc-500">
-        No players found.
+      <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-zinc-400 gap-4 p-8 text-center select-none">
+        <div className="w-20 h-20 bg-blue-900/20 border border-blue-500/20 rounded-full flex items-center justify-center mb-2 shadow-inner opacity-80">
+          <span className="text-4xl filter grayscale opacity-60">🏆</span>
+        </div>
+        <h3 className="text-xl font-bold text-white tracking-wide">The Arena is Empty</h3>
+        <p className="text-sm max-w-[270px] leading-relaxed opacity-80 mb-2">
+          No challengers have claimed a spot on the leaderboard yet. Be the first to make your mark!
+        </p>
+
+        {isGuest && (
+          <button
+            onClick={() => AuthService.loginWithGoogle(currentUserId ?? undefined)}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-zinc-900 rounded-xl font-bold text-sm hover:bg-zinc-200 transition-colors shadow-sm cursor-pointer"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Sign in with Google
+          </button>
+        )}
       </div>
     );
   }
@@ -224,7 +245,7 @@ export default function LeaderboardList({ leaderboard }: { leaderboard: Leaderbo
       </div>
 
       {/* Overlay for guests */}
-      {isGuest && <GuestOverlay />}
+      {isGuest && <GuestOverlay userId={currentUserId ?? undefined} />}
     </div>
   );
 }
