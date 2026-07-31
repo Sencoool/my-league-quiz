@@ -16,16 +16,16 @@ import { useGameStore } from "../store/useGameStore";
 
 // ── Rank helpers ──────────────────────────────────────────────────────────────
 const RANK_THRESHOLDS = [
-  { rank: "CHALLENGER",  minScore: 2800, nextScore: Infinity, color: "#00e5ff" },
-  { rank: "GRANDMASTER", minScore: 1800, nextScore: 2800,     color: "#ff4444" },
-  { rank: "MASTER",      minScore: 1200, nextScore: 1800,     color: "#a855f7" },
-  { rank: "DIAMOND",     minScore: 750,  nextScore: 1200,     color: "#60a5fa" },
-  { rank: "EMERALD",     minScore: 450,  nextScore: 750,      color: "#10b981" },
-  { rank: "PLATINUM",    minScore: 250,  nextScore: 450,      color: "#2dd4bf" },
-  { rank: "GOLD",        minScore: 120,  nextScore: 250,      color: "#f59e0b" },
-  { rank: "SILVER",      minScore: 50,   nextScore: 120,      color: "#94a3b8" },
-  { rank: "BRONZE",      minScore: 10,   nextScore: 50,       color: "#c2773f" },
-  { rank: "IRON",        minScore: 0,    nextScore: 10,       color: "#71717a" },
+  { rank: "CHALLENGER",  minScore: 2800, nextScore: Infinity, color: "#5eb6c9" },
+  { rank: "GRANDMASTER", minScore: 1800, nextScore: 2800,     color: "#d97373" },
+  { rank: "MASTER",      minScore: 1200, nextScore: 1800,     color: "#a98bcf" },
+  { rank: "DIAMOND",     minScore: 750,  nextScore: 1200,     color: "#7ba8d6" },
+  { rank: "EMERALD",     minScore: 450,  nextScore: 750,      color: "#6db59b" },
+  { rank: "PLATINUM",    minScore: 250,  nextScore: 450,      color: "#77c9c0" },
+  { rank: "GOLD",        minScore: 120,  nextScore: 250,      color: "#d4b261" },
+  { rank: "SILVER",      minScore: 50,   nextScore: 120,      color: "#a3b0b5" },
+  { rank: "BRONZE",      minScore: 10,   nextScore: 50,       color: "#b88a65" },
+  { rank: "IRON",        minScore: 0,    nextScore: 10,       color: "#8d9196" },
 ];
 
 function getRankInfo(rankName: string) {

@@ -10,16 +10,16 @@ import CountdownTimer from "./CountdownTimer";
 
 // ── Rank System ──────────────────────────────────────────────────────────────
 const RANK_THRESHOLDS = [
-  { rank: "CHALLENGER",  minScore: 2800, color: "#00e5ff", glow: "rgba(0,229,255,0.4)" },
-  { rank: "GRANDMASTER", minScore: 1800, color: "#ff4444", glow: "rgba(255,68,68,0.4)" },
-  { rank: "MASTER",      minScore: 1200, color: "#a855f7", glow: "rgba(168,85,247,0.4)" },
-  { rank: "DIAMOND",     minScore: 750,  color: "#60a5fa", glow: "rgba(96,165,250,0.4)" },
-  { rank: "EMERALD",     minScore: 450,  color: "#10b981", glow: "rgba(16,185,129,0.4)" },
-  { rank: "PLATINUM",    minScore: 250,  color: "#2dd4bf", glow: "rgba(45,212,191,0.4)" },
-  { rank: "GOLD",        minScore: 120,  color: "#f59e0b", glow: "rgba(245,158,11,0.4)" },
-  { rank: "SILVER",      minScore: 50,   color: "#94a3b8", glow: "rgba(148,163,184,0.4)" },
-  { rank: "BRONZE",      minScore: 10,   color: "#c2773f", glow: "rgba(194,119,63,0.4)" },
-  { rank: "IRON",        minScore: 0,    color: "#71717a", glow: "rgba(113,113,122,0.4)" },
+  { rank: "CHALLENGER",  minScore: 2800, color: "#5eb6c9", glow: "rgba(94,182,201,0.15)" },
+  { rank: "GRANDMASTER", minScore: 1800, color: "#d97373", glow: "rgba(217,115,115,0.15)" },
+  { rank: "MASTER",      minScore: 1200, color: "#a98bcf", glow: "rgba(169,139,207,0.15)" },
+  { rank: "DIAMOND",     minScore: 750,  color: "#7ba8d6", glow: "rgba(123,168,214,0.15)" },
+  { rank: "EMERALD",     minScore: 450,  color: "#6db59b", glow: "rgba(109,181,155,0.15)" },
+  { rank: "PLATINUM",    minScore: 250,  color: "#77c9c0", glow: "rgba(119,201,192,0.15)" },
+  { rank: "GOLD",        minScore: 120,  color: "#d4b261", glow: "rgba(212,178,97,0.15)" },
+  { rank: "SILVER",      minScore: 50,   color: "#a3b0b5", glow: "rgba(163,176,181,0.15)" },
+  { rank: "BRONZE",      minScore: 10,   color: "#b88a65", glow: "rgba(184,138,101,0.15)" },
+  { rank: "IRON",        minScore: 0,    color: "#8d9196", glow: "rgba(141,145,150,0.15)" },
 ];
 
 function getRankInfo(score: number) {
